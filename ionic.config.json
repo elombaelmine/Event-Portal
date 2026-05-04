@@ -1,0 +1,7 @@
+{
+  "name": "event-campus-portal",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
