@@ -1,0 +1,69 @@
+.auth-screen {
+  --background: #ffffff;
+
+  .auth-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    padding: 20px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+    h2 { color: #004d40; font-weight: 800; font-size: 2rem; }
+    p { color: #666; }
+  }
+
+  .custom-input {
+    background: #f4f7f6;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    --padding-start: 15px;
+    ion-icon { color: #004d40; margin-right: 10px; }
+  }
+
+  .auth-btn {
+    --background: #004d40;
+    --color: #ffffff;
+    --border-radius: 12px;
+    height: 55px;
+    margin-top: 20px;
+    font-weight: bold;
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 30px;
+    .highlight { color: #d4af37; font-weight: 700; cursor: pointer; }
+  }
+}
+ion-header {
+  // This creates the clear line between the header and the content
+  border-bottom: 2px solid #004d40; // Your Dark Green
+  
+  // Adding a subtle shadow adds depth to the separation
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+}
+
+ion-toolbar {
+  --background: #ffffff;
+  --border-width: 0; // Removes the default Ionic border to use our custom one
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+ion-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #004d40; 
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+ion-back-button {
+  --color: #004d40;
+}

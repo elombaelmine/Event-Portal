@@ -1,0 +1,49 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <!-- defaultHref should match the route of your welcome page -->
+      <ion-back-button defaultHref="/welcome" text="" mode="md" color="dark"></ion-back-button>
+      <ion-title>EventPortal</ion-title>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding auth-screen">
+  <div class="auth-container">
+    <div class="header">
+      <h2>Welcome Back</h2>
+      <p>Login to manage or explore campus events</p>
+    </div>
+
+    <div class="form-section">
+  <ion-item lines="none" class="custom-input">
+    <ion-icon name="mail-outline" slot="start"></ion-icon>
+    <!-- Add [(ngModel)] here -->
+    <ion-input 
+      type="email" 
+      placeholder="Email Address" 
+      [(ngModel)]="email" 
+      name="email">
+    </ion-input>
+  </ion-item>
+
+  <ion-item lines="none" class="custom-input">
+    <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+    <!-- Add [(ngModel)] here -->
+    <ion-input 
+      type="password" 
+      placeholder="Password" 
+      [(ngModel)]="password" 
+      name="password">
+    </ion-input>
+  </ion-item>
+
+  <ion-button expand="block" mode="ios" class="auth-btn" (click)="login()">
+    CONTINUE
+  </ion-button>
+</div>
+
+    <div class="footer">
+      <p>Don't have an account? <span class="highlight" routerLink="/sign-up">Sign Up</span></p>
+    </div>
+  </div>
+</ion-content>

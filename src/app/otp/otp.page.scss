@@ -1,0 +1,70 @@
+.otp-icon { font-size: 80px; color: #d4af37; margin-bottom: 20px; }
+
+.otp-input-group {
+  display: flex;
+  justify-content: space-between;
+  margin: 30px 0;
+  
+  .otp-box {
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    border: 2px solid #004d40;
+    border-radius: 12px;
+    color: #004d40;
+    background: #ffffff;
+    
+    &:focus {
+      border-color: #d4af37;
+      outline: none;
+    }
+  }
+}
+
+.resend-text {
+  text-align: center;
+  margin-top: 20px;
+  color: #666;
+  span { color: #004d40; font-weight: bold; }
+}
+.otp-box {
+  --background: #f4f4f4; // or your preferred color
+  --padding-start: 0;
+  --text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  width: 45px;
+  height: 50px;
+  font-size: 20px;
+  font-weight: bold;
+}
+on-header {
+  // This creates the clear line between the header and the content
+  border-bottom: 2px solid #004d40; // Your Dark Green
+  
+  // Adding a subtle shadow adds depth to the separation
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+}
+
+ion-toolbar {
+  --background: #ffffff;
+  --border-width: 0; // Removes the default Ionic border to use our custom one
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+ion-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #004d40; 
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+ion-back-button {
+  --color: #004d40;
+}
