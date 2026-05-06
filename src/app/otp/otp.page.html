@@ -1,0 +1,62 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <!-- defaultHref should match the route of your welcome page -->
+      <ion-back-button defaultHref="/sign-up" text="" mode="md" color="dark"></ion-back-button>
+      <ion-title>EventPortal</ion-title>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding auth-screen">
+  <div class="auth-container">
+    <div class="header">
+      <ion-icon name="shield-checkmark-outline" class="otp-icon"></ion-icon>
+      <h2>Verify Email</h2>
+      <p>We've sent a 6-digit code to your email.</p>
+    </div>
+
+    <div class="otp-input-group">
+      <!-- Input 1 -->
+      <ion-input #i1 type="tel" maxlength="1" class="otp-box"
+        [(ngModel)]="otpArray[0]" 
+        (ionInput)="moveFocus($event, i2)">
+      </ion-input>
+
+      <!-- Input 2 -->
+      <ion-input #i2 type="tel" maxlength="1" class="otp-box"
+        [(ngModel)]="otpArray[1]" 
+        (ionInput)="moveFocus($event, i3)">
+      </ion-input>
+
+      <!-- Input 3 -->
+      <ion-input #i3 type="tel" maxlength="1" class="otp-box"
+        [(ngModel)]="otpArray[2]" 
+        (ionInput)="moveFocus($event, i4)">
+      </ion-input>
+
+      <!-- Input 4 -->
+      <ion-input #i4 type="tel" maxlength="1" class="otp-box"
+        [(ngModel)]="otpArray[3]" 
+        (ionInput)="moveFocus($event, i5)">
+      </ion-input>
+
+      <!-- Input 5 -->
+      <ion-input #i5 type="tel" maxlength="1" class="otp-box"
+        [(ngModel)]="otpArray[4]" 
+        (ionInput)="moveFocus($event, i6)">
+      </ion-input>
+
+      <!-- Input 6 -->
+      <ion-input #i6 type="tel" maxlength="1" class="otp-box"
+        [(ngModel)]="otpArray[5]" 
+        (ionInput)="verifyAndRedirect()">
+      </ion-input>
+    </div>
+
+    <ion-button expand="block" mode="ios" class="auth-btn" (click)="verifyAndRedirect()">
+      VERIFY CODE
+    </ion-button>
+
+    <p class="resend-text">Didn't receive a code? <span>Resend</span></p>
+  </div>
+</ion-content>

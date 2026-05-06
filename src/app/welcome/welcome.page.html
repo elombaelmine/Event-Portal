@@ -1,0 +1,28 @@
+<ion-content [fullscreen]="true" class="welcome-screen">
+  <div class="hero-section">
+    <!-- Replace with your actual image path -->
+    <div class="image-overlay"></div>
+    <img src="assets/images/event.jpeg" alt="Event background" class="bg-image">
+  </div>
+
+  <div class="content-section ion-padding">
+    <div class="text-header">
+      <h1>Exceptional Events, <br> <span class="highlight">Effortless Logistics.</span></h1>
+      <p>The premium standard for professional event management and attendee coordination.</p>
+    </div>
+
+    <div class="button-group">
+      <ion-button expand="block" mode="ios" class="get-started-btn" routerLink="/sign-up">
+        Get Started <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+      </ion-button>
+      
+      <ion-button expand="block" mode="ios" fill="outline" class="login-btn" routerLink="/login">
+        Login
+      </ion-button>
+    </div>
+
+    <div class="footer-tag">
+      <p>CRAFTED FOR USERS</p>
+    </div>
+  </div>
+</ion-content>
