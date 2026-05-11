@@ -29,5 +29,33 @@ export const routes: Routes = [
   {
     path: 'admin-dashboard',
     loadComponent: () => import('./admin-dashboard/admin-dashboard.page').then( m => m.AdminDashboardPage)
+  },  {
+    path: 'event',
+    loadComponent: () => import('./admin-dashboard/tabs/event/event.page').then( m => m.EventPage)
   },
+  {
+    path: 'create',
+    loadComponent: () => import('./admin-dashboard/tabs/create/create.page').then( m => m.CreatePage)
+  },
+  {
+    path: 'profile',
+    loadComponent: () => import('./admin-dashboard/tabs/profile/profile.page').then( m => m.ProfilePage)
+  },
+  {
+    path: 'profile',
+    loadComponent: () => import('./home/tabs/profile/profile.page').then( m => m.ProfilePage)
+  },
+  {
+    path: 'view-events',
+    loadComponent: () => import('./home/tabs/view-events/view-events.page').then( m => m.ViewEventsPage)
+  },
+  {
+    path: 'alert',
+    loadComponent: () => import('./home/tabs/alert/alert.page').then( m => m.AlertPage)
+  },
+  {
+    path: 'calender',
+    loadComponent: () => import('./home/tabs/calender/calender.page').then( m => m.CalenderPage)
+  },
+
 ];
