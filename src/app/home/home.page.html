@@ -1,63 +1,27 @@
-<ion-header class="ion-no-border">
-  <!-- Top bar with Search as seen in the mockup -->
-  <ion-toolbar color="primary">
-    <ion-searchbar placeholder="Search events, clubs..." class="custom-search"></ion-searchbar>
-    <ion-buttons slot="end">
-      <ion-icon name="person-circle-outline" size="large" class="ion-padding-end"></ion-icon>
-    </ion-buttons>
-  </ion-toolbar>
+<ion-content [scrollY]="false">
+  <ion-tabs>
+    <ion-tab-bar slot="bottom">
+      
+      <ion-tab-button tab="view-events">
+        <ion-icon name="home-outline"></ion-icon>
+        <ion-label>Home</ion-label>
+      </ion-tab-button>
 
-  <!-- The Events/Create segment toggle -->
-  <ion-toolbar color="primary">
-    <ion-segment value="events" mode="md">
-      <ion-segment-button value="events">
-        <ion-label>EVENTS</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="create">
-        <ion-label>CREATE</ion-label>
-      </ion-segment-button>
-    </ion-segment>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content class="ion-padding">
-  
-  <!-- SECTION 1: FEATURED EVENTS -->
-  <h2 class="section-label">Featured Events</h2>
-  <div class="horizontal-scroll">
-    <!-- This is the 'Slot' for Featured Events -->
-    <div class="featured-card">
-      <div class="date-badge">OCT 26</div>
-      <div class="image-placeholder">
-        <!-- The Admin's image will go here -->
-      </div>
-      <div class="card-details">
-        <h3>Fall Fest Concert</h3>
-        <p>Main Quad</p>
-        <ion-button fill="outline" color="dark" size="small">VIEW</ion-button>
-      </div>
-    </div>
-  </div>
-
-  <!-- SECTION 2: UPCOMING EVENTS -->
-  <h2 class="section-title">Upcoming Events</h2>
-  <ion-badge color="dark">TODAY</ion-badge>
-
-  <div class="list-container">
-    <!-- This is the 'Slot' for standard events -->
-    <div class="event-item">
-      <div class="event-icon">
+      <ion-tab-button tab="calender">
         <ion-icon name="calendar-outline"></ion-icon>
-      </div>
-      <div class="event-info">
-        <h3>Study Abroad Fair</h3>
-        <p>10:00 AM • University Center</p>
-      </div>
-      <ion-button fill="outline" color="dark" class="remind-btn">
-        <ion-icon name="notifications-outline" slot="start"></ion-icon>
-        REMIND
-      </ion-button>
-    </div>
-  </div>
+        <ion-label>Calendar</ion-label>
+      </ion-tab-button>
 
+      <ion-tab-button tab="alert">
+        <ion-icon name="notifications-outline"></ion-icon>
+        <ion-label>Alerts</ion-label>
+      </ion-tab-button>
+
+      <ion-tab-button tab="profile">
+        <ion-icon name="person-outline"></ion-icon>
+        <ion-label>Profile</ion-label>
+      </ion-tab-button>
+
+    </ion-tab-bar>
+  </ion-tabs>
 </ion-content>

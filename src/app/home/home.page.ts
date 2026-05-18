@@ -1,17 +1,18 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+// home.page.ts
+import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
-import { CommonModule } from '@angular/common';
-import { IonHeader, IonToolbar, IonContent, IonIcon, IonButton, IonSegment, IonSegmentButton, IonBadge, IonLabel, IonButtons, IonSearchbar } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { homeOutline, calendarOutline, notificationsOutline, personOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
-  imports: [IonicModule,CommonModule,
-  ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  templateUrl: './home.page.html',
+  styleUrls: ['./home.page.scss'],
+  standalone: true,
+  imports: [IonicModule]
 })
 export class HomePage {
-  isAdmin = false;
-  constructor() {}
+  constructor() {
+    addIcons({ homeOutline, calendarOutline, notificationsOutline, personOutline });
+  }
 }
