@@ -1,24 +1,21 @@
-// admin-dashboard.page.ts
 import { Component } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import {
+  IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel
+} from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-// Changed to standard outline variants to be safe
-import { listOutline, addCircleOutline, personCircleOutline } from 'ionicons/icons'; 
+import {
+  listOutline, addCircleOutline, personOutline
+} from 'ionicons/icons';
 
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.page.html',
   styleUrls: ['./admin-dashboard.page.scss'],
   standalone: true,
-  imports: [IonicModule]
+  imports: [IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel]
 })
 export class AdminDashboardPage {
   constructor() {
-    // Registering the safe outline shapes
-    addIcons({ 
-      'list-box-outline': listOutline, 
-      'add-circle-outline': addCircleOutline, 
-      'shield-checkmark-outline': personCircleOutline 
-    });
+    addIcons({ listOutline, addCircleOutline, personOutline });
   }
 }
