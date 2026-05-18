@@ -1,20 +1,90 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { Router } from '@angular/router';
+import { Firestore, collection, collectionData, doc, deleteDoc } from '@angular/fire/firestore';
+import {
+  IonHeader, IonToolbar, IonTitle, IonContent,
+  IonButton, IonIcon
+} from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import {
+  calendarOutline, createOutline, trashOutline,
+  locationOutline, timeOutline
+} from 'ionicons/icons';
 
 @Component({
   selector: 'app-event',
   templateUrl: './event.page.html',
   styleUrls: ['./event.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [
+    CommonModule,
+    IonHeader, IonToolbar, IonTitle, IonContent,
+    IonButton, IonIcon
+  ]
 })
 export class EventPage implements OnInit {
 
-  constructor() { }
+  private firestore = inject(Firestore);
+  private router = inject(Router);
 
-  ngOnInit() {
+  events: any[] = [];
+  registrations: any[] = [];
+
+  constructor() {
+    addIcons({
+      calendarOutline, createOutline, trashOutline,
+      locationOutline, timeOutline
+    });
   }
 
+  ngOnInit() {
+    // load events
+    const eventsCol = collection(this.firestore, 'events');
+    collectionData(eventsCol, { idField: 'id' }).subscribe((data: any[]) => {
+      const now = new Date();
+      this.events = data.map((val: any) => {
+        const end = new Date(val.endTime);
+        return {
+          ...val,
+          status: val.isDraft ? 'Draft' : end < now ? 'Completed' : 'Upcoming'
+        };
+      });
+    });
+
+    // load registrations
+    const regsCol = collection(this.firestore, 'registrations');
+    collectionData(regsCol, { idField: 'id' }).subscribe((data: any[]) => {
+      this.registrations = data;
+    });
+  }
+
+  getRegistrationCount(eventId: string): number {
+    return this.registrations.filter(r => r.eventId === eventId).length;
+  }
+
+  getFirstRegistrations(eventId: string): any[] {
+    return this.registrations
+      .filter(r => r.eventId === eventId)
+      .slice(0, 3);
+  }
+
+  isLive(event: any): boolean {
+    const now = new Date();
+    return now >= new Date(event.startTime) && now <= new Date(event.endTime);
+  }
+
+  editEvent(event: any) {
+    this.router.navigate(['/admin-dashboard/create'], {
+      state: { event }
+    });
+  }
+
+  async deleteEvent(id: string) {
+    await deleteDoc(doc(this.firestore, `events/${id}`));
+  }
+
+  manageRoster(event: any) {
+    alert(`Roster for: ${event.title}`);
+  }
 }

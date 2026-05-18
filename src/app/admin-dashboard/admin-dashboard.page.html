@@ -1,13 +1,24 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>admin-dashboard</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-tabs>
+  <ion-tab-bar slot="bottom"
+    style="--background: white; border-top: 1px solid #e0e0e0;">
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">admin-dashboard</ion-title>
-    </ion-toolbar>
-  </ion-header>
-</ion-content>
+    <ion-tab-button tab="event" href="event"
+      style="--color: #aaa; --color-selected: #005f73;">
+      <ion-icon name="list-outline"></ion-icon>
+      <ion-label>View</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="create" href="create"
+      style="--color: #aaa; --color-selected: #005f73;">
+      <ion-icon name="add-circle-outline"></ion-icon>
+      <ion-label>Create</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="profile" href="profile"
+      style="--color: #aaa; --color-selected: #005f73;">
+      <ion-icon name="person-outline"></ion-icon>
+      <ion-label>Profile</ion-label>
+    </ion-tab-button>
+
+  </ion-tab-bar>
+</ion-tabs>

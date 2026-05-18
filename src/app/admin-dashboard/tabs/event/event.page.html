@@ -1,13 +1,132 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>event</ion-title>
+<ion-header>
+  <ion-toolbar style="--background: #005f73; --color: white;">
+    <ion-title style="font-weight: 700;">📋 All Events</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">event</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content style="--background: #f0f7f8;">
+  <div class="ion-padding">
+
+    <div *ngFor="let event of events"
+      style="background: white; border-radius: 16px; margin-bottom: 16px;
+             box-shadow: 0 2px 12px rgba(0,0,0,0.08); overflow: hidden;">
+
+      <div style="position: relative;">
+        <img [src]="event.imageUrl ||
+          'https://ionicframework.com/docs/img/demos/card-media.png'"
+          style="width: 100%; height: 160px; object-fit: cover;"/>
+        <div style="position: absolute; top: 10px; left: 10px;
+                    background: white; border-radius: 20px;
+                    padding: 4px 12px; font-size: 12px;
+                    font-weight: 700; color: #005f73;">
+          {{ event.startTime | date:'MMM d, y' }}
+        </div>
+        <div *ngIf="isLive(event)"
+          style="position: absolute; top: 10px; right: 10px;
+                 background: rgba(0,0,0,0.5); border-radius: 20px;
+                 padding: 4px 12px; font-size: 12px;
+                 font-weight: 700; color: #2d9e6b; border: 1px solid #2d9e6b;">
+          🟢 LIVE NOW
+        </div>
+      </div>
+
+      <div style="padding: 14px;">
+        <div style="display: flex; justify-content: space-between;
+                    align-items: flex-start; margin-bottom: 6px;">
+          <div style="flex: 1;">
+            <h2 style="margin: 0 0 4px; font-weight: 700;
+                       color: #111; font-size: 18px;">
+              {{ event.title }}
+            </h2>
+            <p style="margin: 0; color: #666; font-size: 13px;">
+              <ion-icon name="location-outline"
+                style="vertical-align: middle; color: #0a9396;"></ion-icon>
+              {{ event.location || 'No location' }}
+            </p>
+          </div>
+          <div style="text-align: right; flex-shrink: 0; margin-left: 12px;">
+            <p style="margin: 0; font-size: 26px; font-weight: 800; color: #005f73;">
+              {{ getRegistrationCount(event.id) }}
+            </p>
+            <p style="margin: 0; font-size: 10px; color: #888;
+                      font-weight: 600; text-transform: uppercase;">
+              Registered
+            </p>
+          </div>
+        </div>
+
+        <p style="margin: 0 0 10px; color: #888; font-size: 13px;">
+          <ion-icon name="time-outline"
+            style="vertical-align: middle; color: #0a9396;"></ion-icon>
+          {{ event.startTime | date:'shortTime' }}
+          &nbsp;•&nbsp;
+          <span [style.color]="event.status === 'Completed' ? '#2d9e6b' : '#0a9396'"
+            style="font-weight: 600;">
+            {{ event.status }}
+          </span>
+        </p>
+
+        <div style="display: flex; justify-content: space-between;
+                    align-items: center; margin-bottom: 12px;">
+          <div style="display: flex; align-items: center;">
+            <div *ngFor="let reg of getFirstRegistrations(event.id); let i = index"
+              [style.margin-left]="i === 0 ? '0' : '-10px'"
+              style="width: 32px; height: 32px; border-radius: 50%;
+                     background: #0a9396; border: 2px solid white;
+                     display: flex; align-items: center; justify-content: center;
+                     color: white; font-size: 12px; font-weight: 700;">
+              {{ reg.name ? reg.name[0].toUpperCase() : '?' }}
+            </div>
+            <div *ngIf="getRegistrationCount(event.id) > 3"
+              style="margin-left: -10px; width: 32px; height: 32px;
+                     border-radius: 50%; background: #e8f4f5;
+                     border: 2px solid white; display: flex;
+                     align-items: center; justify-content: center;
+                     color: #005f73; font-size: 10px; font-weight: 700;">
+              +{{ getRegistrationCount(event.id) - 3 }}
+            </div>
+          </div>
+
+          <ion-button *ngIf="getRegistrationCount(event.id) > 0"
+            (click)="manageRoster(event)"
+            style="--background: #005f73; --border-radius: 20px;
+                   --color: white; font-size: 13px; height: 36px;">
+            Manage Roster
+          </ion-button>
+          <ion-button *ngIf="getRegistrationCount(event.id) === 0"
+            fill="outline" (click)="editEvent(event)"
+            style="--border-color: #005f73; --color: #005f73;
+                   --border-radius: 20px; font-size: 13px; height: 36px;">
+            View Details
+          </ion-button>
+        </div>
+
+        <div style="display: flex; gap: 8px; padding-top: 12px;
+                    border-top: 1px solid #f0f0f0;">
+          <ion-button expand="block" (click)="editEvent(event)"
+            style="--background: #f4a261; --border-radius: 8px;
+                   --color: white; flex: 1;">
+            <ion-icon name="create-outline" slot="start"></ion-icon>
+            Edit
+          </ion-button>
+          <ion-button expand="block" (click)="deleteEvent(event.id)"
+            style="--background: #e63946; --border-radius: 8px;
+                   --color: white; flex: 1;">
+            <ion-icon name="trash-outline" slot="start"></ion-icon>
+            Delete
+          </ion-button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="events.length === 0"
+      style="text-align: center; margin-top: 80px; color: #999;">
+      <ion-icon name="calendar-outline"
+        style="font-size: 56px; color: #0a9396;"></ion-icon>
+      <p style="font-size: 15px; margin-top: 12px;">
+        No events yet. Go to Create tab!
+      </p>
+    </div>
+
+  </div>
 </ion-content>
