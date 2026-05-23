@@ -32,6 +32,7 @@ export class ViewEventsPage implements OnInit {
   searchQuery: string = '';
   joinedEventIds: string[] = [];
   showNotifications = false;
+  
   notifications: any[] = [];
   profileImage = '';
 
