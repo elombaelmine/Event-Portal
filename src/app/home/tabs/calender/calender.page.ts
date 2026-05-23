@@ -1,20 +1,144 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonicModule } from '@ionic/angular';
+import { Auth, authState } from '@angular/fire/auth';
+import { Firestore, collection, collectionData } from '@angular/fire/firestore';
+import { addIcons } from 'ionicons';
+import { chevronBackOutline, chevronForwardOutline, calendarOutline } from 'ionicons/icons';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-calender',
   templateUrl: './calender.page.html',
   styleUrls: ['./calender.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonicModule, CommonModule, FormsModule]
 })
-export class CalenderPage implements OnInit {
+export class CalenderPage implements OnInit, OnDestroy {
+  private auth = inject(Auth);
+  private firestore = inject(Firestore);
 
-  constructor() { }
+  currentDate: Date = new Date();
+  displayMonthAndYear: string = '';
+  daysOfWeek: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  calendarDays: (number | null)[] = [];
+  todayDay: number | null = null;
 
-  ngOnInit() {
+  // Holds raw string dates student registered for (e.g., ['2026-05-23'])
+  registeredDates: string[] = [];
+  // Holds all published general event dates on campus
+  allEventDates: string[] = [];
+  
+  // Array list for rendering registration cards below the calendar
+  registeredEventsList: any[] = [];
+
+  private authSub!: Subscription;
+  private dataSubs: Subscription[] = [];
+  currentUserId: string = '';
+
+  constructor() {
+    addIcons({ chevronBackOutline, chevronForwardOutline, calendarOutline });
   }
 
+  ngOnInit() {
+    // Monitor auth state to safely query user-specific registrations
+    this.authSub = authState(this.auth).subscribe(user => {
+      if (user) {
+        this.currentUserId = user.uid;
+        this.loadFirestoreCalendarData();
+      }
+    });
+    this.generateCalendar();
+  }
+
+  loadFirestoreCalendarData() {
+    // 1. Fetch overall general campus events to light up "Has Event" status dots
+    const eventsRef = collection(this.firestore, 'events');
+    const eventsSub = collectionData(eventsRef).subscribe((events: any[]) => {
+      this.allEventDates = events
+        .filter(e => e.date && e.status !== 'Draft')
+        .map(e => e.date); // e.g. '2026-05-23'
+    });
+    this.dataSubs.push(eventsSub);
+
+    // 2. Fetch registrations belonging specifically to this logged-in student user
+    const regRef = collection(this.firestore, 'registrations');
+    const regSub = collectionData(regRef).subscribe((regs: any[]) => {
+      // Filters list to rows where matching studentId corresponds with current user session identity
+      const studentRegs = regs.filter(r => r.studentId === this.currentUserId || r.userId === this.currentUserId);
+      
+      this.registeredDates = studentRegs.map(r => r.eventDate).filter(Boolean);
+      this.registeredEventsList = studentRegs;
+    });
+    this.dataSubs.push(regSub);
+  }
+
+  generateCalendar() {
+    const year = this.currentDate.getFullYear();
+    const month = this.currentDate.getMonth();
+
+    this.displayMonthAndYear = this.currentDate.toLocaleString('default', { 
+      month: 'long', 
+      year: 'numeric' 
+    });
+
+    const realToday = new Date();
+    if (year === realToday.getFullYear() && month === realToday.getMonth()) {
+      this.todayDay = realToday.getDate();
+    } else {
+      this.todayDay = null;
+    }
+
+    const firstDayIndex = new Date(year, month, 1).getDay();
+    const totalDays = new Date(year, month + 1, 0).getDate();
+    const daysArray: (number | null)[] = [];
+
+    for (let i = 0; i < firstDayIndex; i++) {
+      daysArray.push(null);
+    }
+    for (let day = 1; day <= totalDays; day++) {
+      daysArray.push(day);
+    }
+
+    this.calendarDays = daysArray;
+  }
+
+  // Helper utility to match calendar grid days to database date string keys (YYYY-MM-DD)
+  private getFormattedStringDate(day: number): string {
+    const year = this.currentDate.getFullYear();
+    const month = String(this.currentDate.getMonth() + 1).padStart(2, '0');
+    const dayStr = String(day).padStart(2, '0');
+    return `${year}-${month}-${dayStr}`;
+  }
+
+  isRegistered(day: number | null): boolean {
+    if (!day) return false;
+    const dateStr = this.getFormattedStringDate(day);
+    return this.registeredDates.includes(dateStr);
+  }
+
+  isHasEvent(day: number | null): boolean {
+    if (!day) return false;
+    const dateStr = this.getFormattedStringDate(day);
+    // Don't show event dot if user is already registered for it (keeps UI clean)
+    return this.allEventDates.includes(dateStr) && !this.isRegistered(day);
+  }
+
+  goToPreviousMonth() {
+    this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+    this.currentDate = new Date(this.currentDate);
+    this.generateCalendar();
+  }
+
+  goToNextMonth() {
+    this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+    this.currentDate = new Date(this.currentDate);
+    this.generateCalendar();
+  }
+
+  ngOnDestroy() {
+    if (this.authSub) this.authSub.unsubscribe();
+    this.dataSubs.forEach(sub => sub.unsubscribe());
+  }
 }

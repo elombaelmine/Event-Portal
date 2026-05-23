@@ -1,13 +1,96 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Calender</ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar style="--background: #004d40; color: #ffffff; padding: 4px 8px;">
+    <ion-title style="font-weight: 700; letter-spacing: 0.5px;"> My Calendar</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Calender</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content style="--background: #f8f9fa;">
+  <div style="max-width: 600px; margin: 0 auto; padding: 16px;">
+
+    <div style="background: #ffffff; border-radius: 16px; padding: 16px; box-shadow: 0 4px 16px rgba(0, 77, 64, 0.04); border: 1px solid rgba(0,0,0,0.02); margin-bottom: 20px;">
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 4px;">
+        <ion-button fill="clear" (click)="goToPreviousMonth()" style="--color: #004d40; margin: 0;">
+          <ion-icon name="chevron-back-outline" slot="icon-only" style="font-size: 20px;"></ion-icon>
+        </ion-button>
+        
+        <h3 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: #004d40; text-transform: capitalize;">
+          {{ displayMonthAndYear }}
+        </h3>
+        
+        <ion-button fill="clear" (click)="goToNextMonth()" style="--color: #004d40; margin: 0;">
+          <ion-icon name="chevron-forward-outline" slot="icon-only" style="font-size: 20px;"></ion-icon>
+        </ion-button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; margin-bottom: 12px;">
+        <div *ngFor="let dayName of daysOfWeek" style="font-size: 0.8rem; font-weight: 700; color: #a0aec0; text-transform: uppercase;">
+          {{ dayName }}
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(7, 1fr); row-gap: 14px; text-align: center; justify-items: center; align-items: center;">
+        <div *ngFor="let day of calendarDays" style="width: 100%; position: relative; min-height: 42px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+          
+          <span *ngIf="day" 
+                [style.background]="day === todayDay ? '#e8f4f5' : 'transparent'"
+                [style.color]="day === todayDay ? '#004d40' : '#2d3748'"
+                [style.font-weight]="day === todayDay ? '700' : '500'"
+                [style.border]="day === todayDay ? '1px solid #004d40' : 'none'"
+                style="width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.95rem;">
+            {{ day }}
+          </span>
+
+          <div *ngIf="day" style="display: flex; gap: 3px; position: absolute; bottom: -2px; justify-content: center; width: 100%;">
+            <span *ngIf="isRegistered(day)" style="width: 6px; height: 6px; background: #004d40; border-radius: 50%;"></span>
+            <span *ngIf="isHasEvent(day)" style="width: 6px; height: 6px; background: #d4af37; border-radius: 50%;"></span>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 24px; padding-left: 4px;">
+      <div style="display: flex; align-items: center; font-size: 0.78rem; font-weight: 600; color: #4a5568;">
+        <span style="width: 8px; height: 8px; background: #004d40; border-radius: 50%; margin-right: 6px;"></span>
+        Registered
+      </div>
+      <div style="display: flex; align-items: center; font-size: 0.78rem; font-weight: 600; color: #4a5568;">
+        <span style="width: 8px; height: 8px; background: #e8f4f5; border: 1px solid #004d40; border-radius: 50%; margin-right: 6px;"></span>
+        Today
+      </div>
+      <div style="display: flex; align-items: center; font-size: 0.78rem; font-weight: 600; color: #4a5568;">
+        <span style="width: 8px; height: 8px; background: #d4af37; border-radius: 50%; margin-right: 6px;"></span>
+        Has Event
+      </div>
+    </div>
+
+    <h3 style="margin: 0 0 16px; font-size: 1.1rem; font-weight: 700; color: #004d40; padding-left: 2px;">
+      My Registered Events
+    </h3>
+
+    <div *ngIf="registeredEventsList.length > 0; else emptyStateTemplate">
+      <div *ngFor="let reg of registeredEventsList" 
+           style="background: #ffffff; border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border-left: 4px solid #004d40; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h4 style="margin: 0 0 4px; font-size: 0.98rem; font-weight: 700; color: #004d40;">{{ reg.eventTitle || 'Conference Meeting' }}</h4>
+          <p style="margin: 0; font-size: 0.82rem; color: #718096;">📅 {{ reg.eventDate }} — 📍 {{ reg.eventLocation || 'Main Hall' }}</p>
+        </div>
+        <span style="background: #e8f4f5; color: #004d40; font-size: 0.72rem; font-weight: 700; padding: 4px 8px; border-radius: 6px; text-transform: uppercase;">
+          Confirmed
+        </span>
+      </div>
+    </div>
+
+    <ng-template #emptyStateTemplate>
+      <div style="background: #ffffff; border-radius: 16px; padding: 36px 16px; text-align: center; box-shadow: 0 4px 16px rgba(0, 77, 64, 0.03); border: 1px dashed #cbd5e0;">
+        <ion-icon name="calendar-outline" style="font-size: 40px; color: #a0aec0; margin-bottom: 10px;"></ion-icon>
+        <p style="margin: 0; font-size: 0.92rem; font-weight: 600; color: #718096;">
+          No registered events yet.
+        </p>
+      </div>
+    </ng-template>
+
+  </div>
 </ion-content>

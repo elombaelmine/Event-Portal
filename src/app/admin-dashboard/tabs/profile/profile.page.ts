@@ -36,10 +36,14 @@ export class ProfilePage implements OnInit {
   totalEvents = 0;
   totalRegistrations = 0;
 
+  // Initialized fields matching your console properties exactly
   profile: any = {
-    fullName: '', phone: '', email: ''
+    fullName: '', 
+    phone: '', 
+    email: ''
   };
 
+  // Maps to keys in your user document
   profileFields = [
     { key: 'fullName', label: 'Full Name' },
     { key: 'email', label: 'Email Address' },
@@ -56,16 +60,21 @@ export class ProfilePage implements OnInit {
       this.adminEmail = user.email || '';
       this.adminId = user.uid.slice(0, 6).toUpperCase();
 
-      // load profile
-      const profileDoc = await getDoc(doc(this.firestore, `admins/${user.uid}`));
+      // Fetch from your main users collection
+      const profileDoc = await getDoc(doc(this.firestore, `users/${user.uid}`));
       if (profileDoc.exists()) {
         const data = profileDoc.data();
-        this.profile = { ...this.profile, ...data };
+        // Merge fetched data into our profile object structure
+        this.profile = { 
+          fullName: data['fullName'] || '',
+          phone: data['phone'] || '',
+          email: data['email'] || this.adminEmail
+        };
         this.profileImage = data['profileImage'] || '';
       }
     }
 
-    // load stats
+    // Dynamic subscription streams for card metrics
     collectionData(collection(this.firestore, 'events')).subscribe((data: any[]) => {
       this.totalEvents = data.length;
     });
@@ -75,7 +84,9 @@ export class ProfilePage implements OnInit {
     });
   }
 
-  startEdit(field: string) { this.editing = field; }
+  startEdit(field: string) { 
+    this.editing = field; 
+  }
 
   stopEdit() {
     this.editing = '';
@@ -85,10 +96,12 @@ export class ProfilePage implements OnInit {
   async saveProfile() {
     const user = this.auth.currentUser;
     if (user) {
-      await setDoc(doc(this.firestore, `admins/${user.uid}`), {
-        ...this.profile,
+      // Updates data using merge to avoid blowing away keys like role, isVerified, or createdAt
+      await setDoc(doc(this.firestore, `users/${user.uid}`), {
+        fullName: this.profile.fullName,
+        phone: this.profile.phone,
         profileImage: this.profileImage
-      });
+      }, { merge: true });
     }
   }
 
