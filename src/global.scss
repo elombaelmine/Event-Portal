@@ -15,18 +15,47 @@
 
 /* Force light mode background globally */
 body {
-  background-color: #ffffff !important;
+  background-color: #FCF3F6 !important;
+  color: #13224D;
 }
 
 ion-content {
-  --background: #ffffff !important; 
-  --color: #000000 !important; 
+  --background: #FCF3F6 !important;
+  --color: #13224D !important;
+}
+
+ion-card {
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18px 40px rgba(19, 34, 77, 0.07);
+  border: none;
+}
+
+ion-button {
+  --border-radius: 14px;
+  font-weight: 700;
+}
+
+ion-button[color=primary] {
+  --background: #13224D;
+  --color: #ffffff;
+}
+
+ion-button[color=secondary] {
+  --background: #FF4D82;
+  --color: #ffffff;
+}
+
+ion-button[color=tertiary] {
+  --background: #F8D3DD;
+  --color: #13224D;
+  border: none;
 }
 
 /* Bottom Tab Bar Styling */
 ion-tab-bar {
-  --background: #0056b3 !important; /* Institutional Blue */
-  --color: rgba(255, 255, 255, 0.7) !important; /* Unselected icons (dimmer white) */
+  --background: #13224D !important;
+  --color: rgba(255, 255, 255, 0.72) !important; /* Unselected icons (dimmer white) */
   --color-selected: #ffffff !important; /* Selected icon (pure white) */
   border-top: none;
   height: 65px;
@@ -36,8 +65,8 @@ ion-tab-bar {
 ion-tab-button {
   /* Set background of the button itself to transparent so it doesn't turn white */
   --background: transparent !important;
-  --background-focused: rgba(255, 255, 255, 0.1) !important;
-  --background-hover: rgba(255, 255, 255, 0.1) !important;
+  --background-focused: rgba(255, 77, 130, 0.14) !important;
+  --background-hover: rgba(255, 77, 130, 0.14) !important;
   
   /* Ensure text and icons stay white */
   --color: rgba(255, 255, 255, 0.8) !important;

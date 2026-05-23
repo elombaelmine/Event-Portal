@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { Firestore, collection, collectionData, doc, deleteDoc } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, doc, deleteDoc, getDoc } from '@angular/fire/firestore';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent,
   IonButton, IonIcon
@@ -30,6 +30,8 @@ export class EventPage implements OnInit {
 
   events: any[] = [];
   registrations: any[] = [];
+  openRosterId: string | null = null;
+  userProfiles: { [uid: string]: string } = {};
 
   constructor() {
     addIcons({
@@ -52,10 +54,26 @@ export class EventPage implements OnInit {
       });
     });
 
-    // load registrations
+    // load registrations + fetch each user's profile image
     const regsCol = collection(this.firestore, 'registrations');
-    collectionData(regsCol, { idField: 'id' }).subscribe((data: any[]) => {
+    collectionData(regsCol, { idField: 'id' }).subscribe(async (data: any[]) => {
       this.registrations = data;
+
+      // fetch profile images for all unique users
+      const uniqueUserIds = [...new Set(data.map(r => r.userId).filter(Boolean))];
+      for (const uid of uniqueUserIds) {
+        if (!this.userProfiles[uid]) {
+          try {
+            const userDoc = await getDoc(doc(this.firestore, 'users', uid));
+            if (userDoc.exists()) {
+              const userData = userDoc.data();
+              this.userProfiles[uid] = userData['profileImage'] || '';
+            }
+          } catch (e) {
+            this.userProfiles[uid] = '';
+          }
+        }
+      }
     });
   }
 
@@ -67,6 +85,10 @@ export class EventPage implements OnInit {
     return this.registrations
       .filter(r => r.eventId === eventId)
       .slice(0, 3);
+  }
+
+  getUserImage(userId: string): string {
+    return this.userProfiles[userId] || '';
   }
 
   isLive(event: any): boolean {
@@ -84,7 +106,11 @@ export class EventPage implements OnInit {
     await deleteDoc(doc(this.firestore, `events/${id}`));
   }
 
-  manageRoster(event: any) {
-    alert(`Roster for: ${event.title}`);
+  toggleRoster(eventId: string) {
+    this.openRosterId = this.openRosterId === eventId ? null : eventId;
+  }
+
+  getRegistrations(eventId: string): any[] {
+    return this.registrations.filter(r => r.eventId === eventId);
   }
 }

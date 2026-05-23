@@ -1,10 +1,10 @@
 <ion-header>
-  <ion-toolbar style="--background: #005f73; --color: white;">
+  <ion-toolbar style="--background: #13224D; --color: white;">
     <ion-title style="font-weight: 700;">📋 All Events</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content style="--background: #f0f7f8;">
+<ion-content style="--background: #FCF3F6;">
   <div class="ion-padding">
 
     <div *ngFor="let event of events"
@@ -16,21 +16,23 @@
           'https://ionicframework.com/docs/img/demos/card-media.png'"
           style="width: 100%; height: 160px; object-fit: cover;"/>
         <div style="position: absolute; top: 10px; left: 10px;
-                    background: white; border-radius: 20px;
+                    background: rgba(255,255,255,0.92); border-radius: 20px;
                     padding: 4px 12px; font-size: 12px;
-                    font-weight: 700; color: #005f73;">
+                    font-weight: 700; color: #13224D;">
           {{ event.startTime | date:'MMM d, y' }}
         </div>
         <div *ngIf="isLive(event)"
           style="position: absolute; top: 10px; right: 10px;
-                 background: rgba(0,0,0,0.5); border-radius: 20px;
+                 background: rgba(255, 77, 130, 0.12); border-radius: 20px;
                  padding: 4px 12px; font-size: 12px;
-                 font-weight: 700; color: #2d9e6b; border: 1px solid #2d9e6b;">
+                 font-weight: 700; color: #D95A7F; border: 1px solid #D95A7F;">
           🟢 LIVE NOW
         </div>
       </div>
 
       <div style="padding: 14px;">
+
+        <!-- Title + registered count -->
         <div style="display: flex; justify-content: space-between;
                     align-items: flex-start; margin-bottom: 6px;">
           <div style="flex: 1;">
@@ -40,12 +42,12 @@
             </h2>
             <p style="margin: 0; color: #666; font-size: 13px;">
               <ion-icon name="location-outline"
-                style="vertical-align: middle; color: #0a9396;"></ion-icon>
+                style="vertical-align: middle; color: #D95A7F;"></ion-icon>
               {{ event.location || 'No location' }}
             </p>
           </div>
           <div style="text-align: right; flex-shrink: 0; margin-left: 12px;">
-            <p style="margin: 0; font-size: 26px; font-weight: 800; color: #005f73;">
+            <p style="margin: 0; font-size: 26px; font-weight: 800; color: #13224D;">
               {{ getRegistrationCount(event.id) }}
             </p>
             <p style="margin: 0; font-size: 10px; color: #888;
@@ -55,6 +57,7 @@
           </div>
         </div>
 
+        <!-- Time + status -->
         <p style="margin: 0 0 10px; color: #888; font-size: 13px;">
           <ion-icon name="time-outline"
             style="vertical-align: middle; color: #0a9396;"></ion-icon>
@@ -66,19 +69,27 @@
           </span>
         </p>
 
+        <!-- Avatar circles + Manage Roster button -->
         <div style="display: flex; justify-content: space-between;
                     align-items: center; margin-bottom: 12px;">
+
           <div style="display: flex; align-items: center;">
             <div *ngFor="let reg of getFirstRegistrations(event.id); let i = index"
               [style.margin-left]="i === 0 ? '0' : '-10px'"
-              style="width: 32px; height: 32px; border-radius: 50%;
+              style="width: 34px; height: 34px; border-radius: 50%;
                      background: #0a9396; border: 2px solid white;
-                     display: flex; align-items: center; justify-content: center;
-                     color: white; font-size: 12px; font-weight: 700;">
-              {{ reg.name ? reg.name[0].toUpperCase() : '?' }}
+                     overflow: hidden; display: flex; align-items: center;
+                     justify-content: center; color: white;
+                     font-size: 13px; font-weight: 700; flex-shrink: 0;">
+              <img *ngIf="getUserImage(reg.userId)"
+                [src]="getUserImage(reg.userId)"
+                style="width: 100%; height: 100%; object-fit: cover;"/>
+              <span *ngIf="!getUserImage(reg.userId)">
+                {{ reg.userEmail ? reg.userEmail[0].toUpperCase() : '?' }}
+              </span>
             </div>
             <div *ngIf="getRegistrationCount(event.id) > 3"
-              style="margin-left: -10px; width: 32px; height: 32px;
+              style="margin-left: -10px; width: 34px; height: 34px;
                      border-radius: 50%; background: #e8f4f5;
                      border: 2px solid white; display: flex;
                      align-items: center; justify-content: center;
@@ -88,41 +99,90 @@
           </div>
 
           <ion-button *ngIf="getRegistrationCount(event.id) > 0"
-            (click)="manageRoster(event)"
-            style="--background: #005f73; --border-radius: 20px;
+            (click)="toggleRoster(event.id)"
+            style="--background: #13224D; --border-radius: 20px;
                    --color: white; font-size: 13px; height: 36px;">
             Manage Roster
           </ion-button>
           <ion-button *ngIf="getRegistrationCount(event.id) === 0"
             fill="outline" (click)="editEvent(event)"
-            style="--border-color: #005f73; --color: #005f73;
+            style="--border-color: #13224D; --color: #13224D;
                    --border-radius: 20px; font-size: 13px; height: 36px;">
             View Details
           </ion-button>
         </div>
 
+        <!-- Roster Panel -->
+        <div *ngIf="openRosterId === event.id"
+          style="background: #F8D3DD; border-radius: 14px; padding: 12px;
+                 margin-bottom: 12px;">
+          <h4 style="margin: 0 0 10px; color: #13224D; font-weight: 700; font-size: 14px;">
+            👥 Registered Users ({{ getRegistrationCount(event.id) }})
+          </h4>
+
+          <div *ngFor="let reg of getRegistrations(event.id)"
+            style="display: flex; align-items: center; gap: 10px;
+                   background: white; border-radius: 8px; padding: 8px 10px;
+                   margin-bottom: 8px;">
+
+            <!-- User avatar -->
+            <div style="border-radius: 50%; width: 38px; height: 38px;
+                        overflow: hidden; border: 2px solid #13224D;
+                        display: flex; align-items: center; justify-content: center;
+                        background: #13224D; flex-shrink: 0;">
+              <img *ngIf="getUserImage(reg.userId)"
+                [src]="getUserImage(reg.userId)"
+                style="width: 100%; height: 100%; object-fit: cover;"/>
+              <span *ngIf="!getUserImage(reg.userId)"
+                style="color: white; font-weight: 700; font-size: 14px;">
+                {{ reg.userEmail ? reg.userEmail[0].toUpperCase() : '?' }}
+              </span>
+            </div>
+
+            <!-- User info -->
+            <div style="flex: 1;">
+              <p style="margin: 0; font-size: 13px; font-weight: 600; color: #005f73;">
+                {{ reg.userEmail || 'Unknown' }}
+              </p>
+              <p style="margin: 0; font-size: 11px; color: #888;">
+                Joined: {{ reg.registeredAt | date:'MMM d, h:mm a' }}
+              </p>
+            </div>
+
+            <!-- Confirmed badge -->
+            <div style="background: #F8D3DD; border-radius: 6px;
+                        padding: 3px 8px; font-size: 10px;
+                        font-weight: 700; color: #13224D;">
+              ✓ Confirmed
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Edit/Delete buttons -->
         <div style="display: flex; gap: 8px; padding-top: 12px;
                     border-top: 1px solid #f0f0f0;">
           <ion-button expand="block" (click)="editEvent(event)"
-            style="--background: #f4a261; --border-radius: 8px;
+            style="--background: #13224D; --border-radius: 8px;
                    --color: white; flex: 1;">
             <ion-icon name="create-outline" slot="start"></ion-icon>
             Edit
           </ion-button>
           <ion-button expand="block" (click)="deleteEvent(event.id)"
-            style="--background: #e63946; --border-radius: 8px;
+            style="--background: #D95A7F; --border-radius: 8px;
                    --color: white; flex: 1;">
             <ion-icon name="trash-outline" slot="start"></ion-icon>
             Delete
           </ion-button>
         </div>
+
       </div>
     </div>
 
     <div *ngIf="events.length === 0"
       style="text-align: center; margin-top: 80px; color: #999;">
       <ion-icon name="calendar-outline"
-        style="font-size: 56px; color: #0a9396;"></ion-icon>
+        style="font-size: 56px; color: #D95A7F;"></ion-icon>
       <p style="font-size: 15px; margin-top: 12px;">
         No events yet. Go to Create tab!
       </p>

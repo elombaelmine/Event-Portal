@@ -1,27 +1,24 @@
-<ion-content [scrollY]="false">
-  <ion-tabs>
-    <ion-tab-bar slot="bottom">
-      
-      <ion-tab-button tab="view-events">
-        <ion-icon name="home-outline"></ion-icon>
-        <ion-label>Home</ion-label>
-      </ion-tab-button>
+<ion-tabs>
+  <ion-tab-bar slot="bottom"
+    style="--background: white; border-top: 1px solid #e0e0e0;">
 
-      <ion-tab-button tab="calender">
-        <ion-icon name="calendar-outline"></ion-icon>
-        <ion-label>Calendar</ion-label>
-      </ion-tab-button>
+    <ion-tab-button tab="view-events" href="/home/view-events"
+      style="--color: #aaa; --color-selected: #004d40;">
+      <ion-icon name="home-outline"></ion-icon>
+      <ion-label>Home</ion-label>
+    </ion-tab-button>
 
-      <ion-tab-button tab="alert">
-        <ion-icon name="notifications-outline"></ion-icon>
-        <ion-label>Alerts</ion-label>
-      </ion-tab-button>
+    <ion-tab-button tab="calender" href="/home/calender"
+      style="--color: #aaa; --color-selected: #004d40;">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <ion-label>Calendar</ion-label>
+    </ion-tab-button>
 
-      <ion-tab-button tab="profile">
-        <ion-icon name="person-outline"></ion-icon>
-        <ion-label>Profile</ion-label>
-      </ion-tab-button>
+    <ion-tab-button tab="profile" href="/home/profile"
+      style="--color: #aaa; --color-selected: #004d40;">
+      <ion-icon name="person-outline"></ion-icon>
+      <ion-label>Profile</ion-label>
+    </ion-tab-button>
 
-    </ion-tab-bar>
-  </ion-tabs>
-</ion-content>
+  </ion-tab-bar>
+</ion-tabs>

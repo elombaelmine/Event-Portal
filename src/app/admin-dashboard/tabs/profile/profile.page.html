@@ -1,26 +1,26 @@
 <ion-header>
-  <ion-toolbar style="--background: #004d40; --color: white;">
+  <ion-toolbar style="--background: #13224D; --color: white;">
     <ion-title style="font-weight: 700;">👤 Profile</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content style="--background: #f0f7f8;">
+<ion-content style="--background: #FCF3F6;">
   <div style="padding: 30px 16px 16px;">
 
     <div style="text-align: center; margin-bottom: 20px;">
       <div style="position: relative; display: inline-block;">
         <div style="width: 100px; height: 100px; border-radius: 50%;
-                    border: 3px solid #004d40; overflow: hidden;
-                    background: #e8f4f5; display: flex; align-items: center;
+                    border: 3px solid #13224D; overflow: hidden;
+                    background: #F8D3DD; display: flex; align-items: center;
                     justify-content: center;">
           <img *ngIf="profileImage" [src]="profileImage"
             style="width: 100%; height: 100%; object-fit: cover;"/>
           <ion-icon *ngIf="!profileImage" name="person-outline"
-            style="font-size: 48px; color: #004d40;"></ion-icon>
+            style="font-size: 48px; color: #13224D;"></ion-icon>
         </div>
         <div (click)="photoInput.click()"
           style="position: absolute; bottom: 0; right: 0;
-                 background: #004d40; border-radius: 50%; width: 30px;
+                 background: #13224D; border-radius: 50%; width: 30px;
                  height: 30px; display: flex; align-items: center;
                  justify-content: center; cursor: pointer; border: 2px solid white;">
           <ion-icon name="camera-outline" style="color: white; font-size: 16px;"></ion-icon>
@@ -40,7 +40,7 @@
 
     <div style="background: white; border-radius: 16px; padding: 16px;
                 margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-      <h4 style="color: #004d40; font-weight: 700; margin: 0 0 14px; font-size: 15px;">
+      <h4 style="color: #13224D; font-weight: 700; margin: 0 0 14px; font-size: 15px;">
         Personal Information
       </h4>
 
@@ -70,7 +70,7 @@
 
     <div style="background: white; border-radius: 16px; padding: 16px;
                 margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-      <h4 style="color: #004d40; font-weight: 700; margin: 0 0 14px; font-size: 15px;">
+      <h4 style="color: #13224D; font-weight: 700; margin: 0 0 14px; font-size: 15px;">
         Dashboard Stats
       </h4>
       <div style="display: flex; justify-content: space-around;">
@@ -81,7 +81,7 @@
           <p style="margin: 0; font-size: 12px; color: #888;">Events</p>
         </div>
         <div style="text-align: center;">
-          <p style="margin: 0; font-size: 28px; font-weight: 800; color: #d4af37;">
+          <p style="margin: 0; font-size: 28px; font-weight: 800; color: #FF4D82;">
             {{ totalRegistrations }}
           </p>
           <p style="margin: 0; font-size: 12px; color: #888;">Registrations</p>
@@ -90,9 +90,9 @@
     </div>
 
     <ion-button expand="block" (click)="logout()"
-      style="--background: white; --border-radius: 12px; --color: #e63946;
+      style="--background: white; --border-radius: 12px; --color: #D95A7F;
              font-weight: 700; height: 50px;
-             --box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+             --box-shadow: 0 10px 30px rgba(19, 34, 77, 0.08);">
       <ion-icon name="log-out-outline" slot="start"></ion-icon>
       Logout
     </ion-button>

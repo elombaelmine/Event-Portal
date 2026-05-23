@@ -1,10 +1,13 @@
 .welcome-screen {
-  --background: #ffffff;
+  --background: #FCF3F6;
 
-  // Professional Color Palette
-  $dark-green: #004d40; // Deep Forest Green
-  $gold-accent: #d4af37; // Metallic Gold
-  $soft-white: #ffffff;
+  // Soft blush palette
+  $deep-navy: #13224D;
+  $soft-blush: #F8D3DD;
+  $pastel-pink: #F4CED8;
+  $hot-pink: #FF4D82;
+  $rose-pink: #D95A7F;
+  $ivory: #FCF3F6;
 
   .hero-section {
     position: relative;
@@ -25,74 +28,80 @@
       left: 0;
       width: 100%;
       height: 100%;
-      // Smooth fade from dark transparent to solid white
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(255, 255, 255, 1) 95%);
+      background: linear-gradient(to bottom, rgba(19, 34, 77, 0.18) 0%, rgba(255, 255, 255, 0.96) 95%);
       z-index: 1;
     }
   }
 
   .content-section {
     text-align: center;
-    background: $soft-white;
+    background: $ivory;
     margin-top: -30px;
     position: relative;
     z-index: 2;
+    padding: 32px 20px 24px;
+    border-radius: 28px 28px 0 0;
+    box-shadow: 0 -12px 40px rgba(19, 34, 77, 0.07);
 
     h1 {
-      font-size: 30px;
+      font-size: 2.4rem;
       font-weight: 800;
-      color: #121212;
-      line-height: 1.2;
+      color: $deep-navy;
+      line-height: 1.1;
       margin-bottom: 12px;
 
       .highlight {
-        color: $dark-green; // Green for the main emphasis
+        color: $hot-pink;
       }
     }
 
     p {
-      color: #555;
-      font-size: 15px;
-      line-height: 1.6;
-      padding: 0 15px;
+      color: #5f5f74;
+      font-size: 1rem;
+      line-height: 1.75;
+      padding: 0 12px;
+      margin-top: 8px;
     }
   }
 
   .button-group {
-    margin-top: 35px;
-    padding: 0 15px;
+    margin-top: 34px;
+    padding: 0 18px;
 
     .get-started-btn {
-      --background: #{$dark-green}; // Dark Green background
-      --color: #{$soft-white};
-      --border-radius: 8px;
-      height: 58px;
-      font-weight: 700;
-      font-size: 16px;
-      margin-bottom: 12px;
-      --box-shadow: 0 4px 15px rgba(0, 77, 64, 0.3);
+      --background: #{$hot-pink};
+      --color: #ffffff;
+      --border-radius: 14px;
+      height: 56px;
+      font-weight: 800;
+      font-size: 1rem;
+      margin-bottom: 14px;
+      --box-shadow: 0 16px 30px rgba(255, 77, 130, 0.2);
     }
 
     .login-btn {
-      --color: #{$dark-green}; 
-      --border-color: #{$gold-accent}; // Gold border for the outline button
+      --background: transparent;
+      --color: #{$deep-navy};
+      --border-color: #{$rose-pink};
       --border-width: 2px;
-      --border-radius: 8px;
-      height: 58px;
+      --border-radius: 14px;
+      height: 56px;
       font-weight: 700;
+      font-size: 1rem;
     }
   }
 
   .footer-tag {
-    margin-top: 45px;
+    margin-top: 38px;
     p {
       font-size: 11px;
-      letter-spacing: 2.5px;
-      color: #aaa;
+      letter-spacing: 2px;
+      color: #8b8091;
       font-weight: 700;
-      border-top: 1px solid #f0f0f0;
+      border-top: 1px solid rgba(217, 90, 127, 0.12);
       display: inline-block;
-      padding-top: 10px;
+      padding-top: 12px;
+      margin: 0 auto;
     }
   }
 }

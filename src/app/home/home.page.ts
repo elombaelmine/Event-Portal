@@ -1,18 +1,19 @@
-// home.page.ts
 import { Component } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import {
+  IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel
+} from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { homeOutline, calendarOutline, notificationsOutline, personOutline } from 'ionicons/icons';
+import { homeOutline, calendarOutline, personOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   standalone: true,
-  imports: [IonicModule]
+  imports: [IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel]
 })
 export class HomePage {
   constructor() {
-    addIcons({ homeOutline, calendarOutline, notificationsOutline, personOutline });
+    addIcons({ homeOutline, calendarOutline, personOutline });
   }
 }

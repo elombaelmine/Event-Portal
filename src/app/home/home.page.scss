@@ -1,7 +1,7 @@
 /* Global Page Settings */
 ion-content {
-  --background: #ffffff;
-  --color: #1a1a1a; // Dark grey instead of pure black for better readability
+  --background: #FCF3F6;
+  --color: #13224D;
 }
 
 /* Section Titles & Labels */
@@ -9,9 +9,9 @@ ion-content {
   font-weight: 800;
   font-size: 1.1rem;
   margin: 24px 0 12px 0;
-  color: #0056b3; /* Primary Blue */
+  color: #13224D;
   text-transform: uppercase;
-  border-left: 4px solid #0056b3;
+  border-left: 4px solid #FF4D82;
   padding-left: 10px;
 }
 
@@ -27,44 +27,45 @@ ion-content {
 .featured-card {
   min-width: 280px;
   background: #ffffff;
-  border: 1px solid #d1d9e6; /* Soft blue-grey border */
-  border-radius: 12px; /* Modern rounded corners */
+  border: 1px solid rgba(217, 90, 127, 0.16);
+  border-radius: 18px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 86, 179, 0.08); /* Subtle blue shadow */
+  box-shadow: 0 18px 40px rgba(19, 34, 77, 0.07);
   
   .image-placeholder {
     height: 150px;
-    background: #f0f4f8; /* Light blue-grey background */
-    border-bottom: 1px solid #e2e8f0;
+    background: #F8D3DD;
+    border-bottom: 1px solid rgba(217, 90, 127, 0.16);
   }
   
   .date-tag {
     position: absolute;
     top: 12px;
     left: 12px;
-    background: #0056b3; /* Blue background */
+    background: #FF4D82;
     color: #ffffff;
-    padding: 5px 10px;
+    padding: 6px 12px;
     font-weight: bold;
     font-size: 0.75rem;
-    border-radius: 6px;
+    border-radius: 8px;
   }
 
   .card-content {
-    padding: 15px;
+    padding: 16px;
     
     h3 { 
       margin: 0; 
       font-size: 1.1rem; 
       font-weight: 700; 
-      color: #1a202c;
+      color: #13224D;
     }
     
     p { 
-      margin: 6px 0; 
-      color: #4a5568; 
-      font-size: 0.85rem; 
+      margin: 8px 0 0; 
+      color: #5f5f74; 
+      font-size: 0.88rem; 
+      line-height: 1.6;
     }
   }
 }
@@ -73,16 +74,16 @@ ion-content {
 .event-row, .event-item {
   display: flex;
   align-items: center;
-  padding: 16px;
-  margin-bottom: 10px;
+  padding: 18px;
+  margin-bottom: 12px;
   background: #ffffff;
-  border-radius: 10px;
-  border: 1px solid #edf2f7;
+  border-radius: 18px;
+  border: 1px solid rgba(217, 90, 127, 0.12);
 
   .icon-box, .event-icon {
-    font-size: 1.8rem;
-    margin-right: 15px;
-    color: #0056b3;
+    font-size: 1.9rem;
+    margin-right: 16px;
+    color: #FF4D82;
     display: flex;
     align-items: center;
   }
@@ -93,50 +94,50 @@ ion-content {
     h3 { 
       margin: 0; 
       font-size: 1rem; 
-      font-weight: 600; 
-      color: #1a202c;
+      font-weight: 700; 
+      color: #13224D;
     }
     
     p { 
-      margin: 2px 0; 
-      color: #718096; 
-      font-size: 0.8rem; 
+      margin: 4px 0 0; 
+      color: #6b6f86; 
+      font-size: 0.87rem; 
+      line-height: 1.5;
     }
   }
 
   .remind-btn {
-    --border-radius: 6px;
-    --background: #f0f7ff;
-    --color: #0056b3;
+    --border-radius: 10px;
+    --background: #F8D3DD;
+    --color: #13224D;
     --box-shadow: none;
-    font-size: 0.75rem;
-    font-weight: bold;
-    height: 32px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    height: 34px;
   }
 }
 
 /* Badge Styling */
 ion-badge {
-  --background: #0056b3;
-  --padding-start: 8px;
-  --padding-end: 8px;
+  --background: #13224D;
+  --padding-start: 10px;
+  --padding-end: 10px;
   margin-bottom: 10px;
 }
 
 /* View Button in Card */
 .view-btn {
-  --background: #0056b3;
+  --background: #FF4D82;
   --color: #ffffff;
-  --border-radius: 6px;
-  margin-top: 10px;
+  --border-radius: 10px;
+  margin-top: 12px;
   width: 100%;
 }
 ion-segment-button {
-  --color: #ffffff !important;
+  --background: transparent;
+  --color: #13224D !important;
   --color-checked: #ffffff !important;
-  --indicator-color: #ffffff !important; /* The underline */
-  
-  /* Fix hover on the top segment */
-  --background-hover: rgba(255, 255, 255, 0.1) !important;
-  --background-focused: rgba(255, 255, 255, 0.1) !important;
+  --indicator-color: #FF4D82 !important; /* The underline */
+  --background-hover: rgba(255, 77, 130, 0.12) !important;
+  --background-focused: rgba(255, 77, 130, 0.12) !important;
 }
