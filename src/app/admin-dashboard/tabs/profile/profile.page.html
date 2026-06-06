@@ -11,7 +11,7 @@
       <div style="position: relative; display: inline-block;">
         <div style="width: 100px; height: 100px; border-radius: 50%;
                     border: 3px solid #13224D; overflow: hidden;
-                    background: #F8D3DD; display: flex; align-items: center;
+                    background: white; display: flex; align-items: center;
                     justify-content: center;">
           <img *ngIf="profileImage" [src]="profileImage"
             style="width: 100%; height: 100%; object-fit: cover;"/>
@@ -81,7 +81,7 @@
           <p style="margin: 0; font-size: 12px; color: #888;">Events</p>
         </div>
         <div style="text-align: center;">
-          <p style="margin: 0; font-size: 28px; font-weight: 800; color: #FF4D82;">
+          <p style="margin: 0; font-size: 28px; font-weight: 800; color: #0D3E2D;">
             {{ totalRegistrations }}
           </p>
           <p style="margin: 0; font-size: 12px; color: #888;">Registrations</p>
@@ -90,7 +90,7 @@
     </div>
 
     <ion-button expand="block" (click)="logout()"
-      style="--background: white; --border-radius: 12px; --color: #D95A7F;
+      style="--background: white; --border-radius: 12px; --color: #0D3E2D;
              font-weight: 700; height: 50px;
              --box-shadow: 0 10px 30px rgba(19, 34, 77, 0.08);">
       <ion-icon name="log-out-outline" slot="start"></ion-icon>

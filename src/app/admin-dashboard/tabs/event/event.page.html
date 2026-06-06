@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar style="--background: #13224D; --color: white;">
+  <ion-toolbar style="--background: #10552f; --color: #0D3E2D;">
     <ion-title style="font-weight: 700;">📋 All Events</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -23,9 +23,9 @@
         </div>
         <div *ngIf="isLive(event)"
           style="position: absolute; top: 10px; right: 10px;
-                 background: rgba(255, 77, 130, 0.12); border-radius: 20px;
+                 background: rgba(30, 107, 69, 0.12); border-radius: 20px;
                  padding: 4px 12px; font-size: 12px;
-                 font-weight: 700; color: #D95A7F; border: 1px solid #D95A7F;">
+                 font-weight: 700; color: #1E6B45; border: 1px solid #1E6B45;">
           🟢 LIVE NOW
         </div>
       </div>
@@ -42,7 +42,7 @@
             </h2>
             <p style="margin: 0; color: #666; font-size: 13px;">
               <ion-icon name="location-outline"
-                style="vertical-align: middle; color: #D95A7F;"></ion-icon>
+                style="vertical-align: middle; color: #0D3E2D;"></ion-icon>
               {{ event.location || 'No location' }}
             </p>
           </div>
@@ -114,7 +114,7 @@
 
         <!-- Roster Panel -->
         <div *ngIf="openRosterId === event.id"
-          style="background: #F8D3DD; border-radius: 14px; padding: 12px;
+          style="background: #ffffff; border-radius: 14px; padding: 12px;
                  margin-bottom: 12px;">
           <h4 style="margin: 0 0 10px; color: #13224D; font-weight: 700; font-size: 14px;">
             👥 Registered Users ({{ getRegistrationCount(event.id) }})
@@ -150,7 +150,7 @@
             </div>
 
             <!-- Confirmed badge -->
-            <div style="background: #F8D3DD; border-radius: 6px;
+            <div style="background: #F4EFE2; border-radius: 6px;
                         padding: 3px 8px; font-size: 10px;
                         font-weight: 700; color: #13224D;">
               ✓ Confirmed
@@ -163,13 +163,13 @@
         <div style="display: flex; gap: 8px; padding-top: 12px;
                     border-top: 1px solid #f0f0f0;">
           <ion-button expand="block" (click)="editEvent(event)"
-            style="--background: #13224D; --border-radius: 8px;
+            style="--background: #C8A24C; --border-radius: 8px;
                    --color: white; flex: 1;">
             <ion-icon name="create-outline" slot="start"></ion-icon>
             Edit
           </ion-button>
           <ion-button expand="block" (click)="deleteEvent(event.id)"
-            style="--background: #D95A7F; --border-radius: 8px;
+            style="--background: #1E6B45; --border-radius: 8px;
                    --color: white; flex: 1;">
             <ion-icon name="trash-outline" slot="start"></ion-icon>
             Delete
@@ -182,7 +182,7 @@
     <div *ngIf="events.length === 0"
       style="text-align: center; margin-top: 80px; color: #999;">
       <ion-icon name="calendar-outline"
-        style="font-size: 56px; color: #D95A7F;"></ion-icon>
+        style="font-size: 56px; color: #0D3E2D;"></ion-icon>
       <p style="font-size: 15px; margin-top: 12px;">
         No events yet. Go to Create tab!
       </p>

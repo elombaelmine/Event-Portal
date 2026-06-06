@@ -15,19 +15,19 @@
 
 /* Force light mode background globally */
 body {
-  background-color: #FCF3F6 !important;
-  color: #13224D;
+  background-color: #F4EFE2 !important;
+  color: #0D3E2D;
 }
 
 ion-content {
-  --background: #FCF3F6 !important;
-  --color: #13224D !important;
+  --background: #F4EFE2 !important;
+  --color: #0D3E2D !important;
 }
 
 ion-card {
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 18px 40px rgba(19, 34, 77, 0.07);
+  background: rgba(244, 239, 226, 0.96);
+  box-shadow: 0 18px 40px rgba(13, 62, 45, 0.08);
   border: none;
 }
 
@@ -37,26 +37,26 @@ ion-button {
 }
 
 ion-button[color=primary] {
-  --background: #13224D;
+  --background: #0D3E2D;
   --color: #ffffff;
 }
 
 ion-button[color=secondary] {
-  --background: #FF4D82;
+  --background: #1E6B45;
   --color: #ffffff;
 }
 
 ion-button[color=tertiary] {
-  --background: #F8D3DD;
-  --color: #13224D;
+  --background: #B8CBA0;
+  --color: #0D3E2D;
   border: none;
 }
 
 /* Bottom Tab Bar Styling */
 ion-tab-bar {
-  --background: #13224D !important;
-  --color: rgba(255, 255, 255, 0.72) !important; /* Unselected icons (dimmer white) */
-  --color-selected: #ffffff !important; /* Selected icon (pure white) */
+  --background: #0D3E2D !important;
+  --color: rgba(244, 239, 226, 0.72) !important; /* Unselected icons (dimmer white) */
+  --color-selected: #F4EFE2 !important; /* Selected icon (pure white) */
   border-top: none;
   height: 65px;
 }
@@ -65,14 +65,14 @@ ion-tab-bar {
 ion-tab-button {
   /* Set background of the button itself to transparent so it doesn't turn white */
   --background: transparent !important;
-  --background-focused: rgba(255, 77, 130, 0.14) !important;
-  --background-hover: rgba(255, 77, 130, 0.14) !important;
+  --background-focused: rgba(200, 162, 76, 0.14) !important;
+  --background-hover: rgba(200, 162, 76, 0.14) !important;
   
-  /* Ensure text and icons stay white */
-  --color: rgba(255, 255, 255, 0.8) !important;
-  --color-focused: #ffffff !important;
-  --color-selected: #ffffff !important;
-  --color-hover: #ffffff !important;
+  /* Ensure text and icons stay light */
+  --color: rgba(244, 239, 226, 0.8) !important;
+  --color-focused: #F4EFE2 !important;
+  --color-selected: #F4EFE2 !important;
+  --color-hover: #F4EFE2 !important;
 
   /* Force label visibility */
   ion-label {

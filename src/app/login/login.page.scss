@@ -1,5 +1,5 @@
 .auth-screen {
-  --background: #FCF3F6;
+  --background: #F4EFE2;
 
   .auth-container {
     display: flex;
@@ -14,13 +14,13 @@
     text-align: center;
     margin-bottom: 28px;
     h2 {
-      color: #13224D;
+      color: #0D3E2D;
       font-weight: 800;
       font-size: 2.1rem;
       margin-bottom: 8px;
     }
     p {
-      color: #5f5f74;
+      color: #5B6C5C;
       font-size: 0.98rem;
       line-height: 1.5;
     }
@@ -30,18 +30,17 @@
     background: #ffffff;
     border-radius: 18px;
     margin-bottom: 15px;
-    border: 1px solid rgba(217, 90, 127, 0.18);
-    box-shadow: 0 12px 26px rgba(19, 34, 77, 0.06);
+    border: 1px solid rgba(30, 107, 69, 0.18);
+    box-shadow: 0 12px 26px rgba(13, 62, 45, 0.06);
     --padding-start: 16px;
+
     ion-icon {
-      color: #D95A7F;
-      margin-right: 12px;
-      font-size: 20px;
+      color: #C8A24C;
     }
   }
 
   .auth-btn {
-    --background: #13224D;
+    --background: #0D3E2D;
     --color: #ffffff;
     --border-radius: 18px;
     height: 56px;
@@ -53,11 +52,11 @@
     text-align: center;
     margin-top: 30px;
     p {
-      color: #5f5f74;
+      color: #5B6C5C;
       line-height: 1.6;
     }
     .highlight {
-      color: #FF4D82;
+      color: #1E6B45;
       font-weight: 700;
       cursor: pointer;
       text-decoration: underline;
@@ -65,8 +64,8 @@
   }
 }
 ion-header {
-  border-bottom: 1px solid rgba(217, 90, 127, 0.18);
-  box-shadow: 0 6px 20px rgba(19, 34, 77, 0.06);
+  border-bottom: 1px solid rgba(30, 107, 69, 0.18);
+  box-shadow: 0 6px 20px rgba(13, 62, 45, 0.06);
   background: #ffffff;
 }
 
@@ -81,11 +80,11 @@ ion-title {
   font-size: 1.05rem;
   font-weight: 800;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #13224D;
+  color: #0D3E2D;
   letter-spacing: 1.2px;
   text-transform: uppercase;
 }
 
 ion-back-button {
-  --color: #D95A7F;
+  --color: #C8A24C;
 }

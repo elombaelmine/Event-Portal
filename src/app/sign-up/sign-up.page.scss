@@ -1,5 +1,5 @@
 .auth-screen {
-  --background: #FCF3F6;
+  --background: #F4EFE2;
 
   .auth-container {
     display: flex;
@@ -14,13 +14,13 @@
     text-align: center;
     margin-bottom: 30px;
     h2 {
-      color: #13224D;
+      color: #0D3E2D;
       font-weight: 800;
       font-size: 2.2rem;
       margin-bottom: 5px;
     }
     p {
-      color: #5f5f74;
+      color: #5B6C5C;
       font-size: 1rem;
     }
   }
@@ -29,42 +29,42 @@
     background: #ffffff;
     border-radius: 18px;
     margin-bottom: 15px;
-    border: 1px solid rgba(217, 90, 127, 0.18);
-    box-shadow: 0 12px 26px rgba(19, 34, 77, 0.06);
+    border: 1px solid rgba(30, 107, 69, 0.18);
+    box-shadow: 0 12px 26px rgba(13, 62, 45, 0.06);
     --padding-start: 16px;
-    --highlight-color: #FF4D82;
+    --highlight-color: #C8A24C;
 
     ion-icon {
-      color: #D95A7F;
+      color: #C8A24C;
       margin-right: 10px;
       font-size: 20px;
     }
 
     ion-select {
       width: 100%;
-      color: #13224D;
+      color: #0D3E2D;
     }
   }
 
   .auth-btn {
-    --background: #13224D;
+    --background: #0D3E2D;
     --color: #ffffff;
     --border-radius: 18px;
     height: 56px;
     margin-top: 25px;
     font-weight: 700;
     font-size: 1.1rem;
-    box-shadow: 0 16px 32px rgba(19, 34, 77, 0.16);
+    box-shadow: 0 16px 32px rgba(13, 62, 45, 0.16);
   }
 
   .footer {
     text-align: center;
     margin-top: 35px;
     p {
-      color: #5f5f74;
+      color: #5B6C5C;
     }
     .highlight {
-      color: #FF4D82;
+      color: #1E6B45;
       font-weight: 700;
       text-decoration: underline;
       cursor: pointer;
@@ -73,8 +73,8 @@
 }
 
 ion-header {
-  border-bottom: 1px solid rgba(217, 90, 127, 0.18);
-  box-shadow: 0 6px 20px rgba(19, 34, 77, 0.06);
+  border-bottom: 1px solid rgba(30, 107, 69, 0.18);
+  box-shadow: 0 6px 20px rgba(13, 62, 45, 0.06);
   background: #ffffff;
 }
 
@@ -89,11 +89,11 @@ ion-title {
   font-size: 1.1rem;
   font-weight: 800;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #13224D;
+  color: #0D3E2D;
   letter-spacing: 1.5px;
   text-transform: uppercase;
 }
 
 ion-back-button {
-  --color: #D95A7F;
+  --color: #C8A24C;
 }

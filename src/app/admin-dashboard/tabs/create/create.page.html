@@ -1,10 +1,10 @@
 <ion-header>
-  <ion-toolbar style="--background: #13224D; --color: white;">
+  <ion-toolbar style="--background: #0D3E2D; --color: white;">
     <ion-title style="font-weight: 700;">➕ {{ editingId ? 'Edit' : 'Create' }} Event</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content style="--background: #FCF3F6;">
+<ion-content style="--background: #F4EFE2;">
   <div style="padding: 16px;">
 
     <!-- Progress -->
@@ -14,13 +14,13 @@
         {{ editingId ? 'Edit Event' : 'Create New Event' }}
       </h3>
     </div>
-    <div style="background: #F2D6DF; border-radius: 4px; height: 6px; margin-bottom: 20px;">
-      <div style="background: #FF4D82; width: 66%; height: 100%; border-radius: 4px;"></div>
+    <div style="background: #F4EFE2; border-radius: 4px; height: 6px; margin-bottom: 20px;">
+      <div style="background: #C8A24C; width: 66%; height: 100%; border-radius: 4px;"></div>
     </div>
 
     <!-- Image Upload -->
     <div (click)="imageInput.click()"
-      style="background: #F8D3DD; border-radius: 18px; height: 160px;
+      style="background: #F4EFE2; border-radius: 18px; height: 160px;
              display: flex; flex-direction: column; align-items: center;
              justify-content: center; margin-bottom: 20px; position: relative;
              overflow: hidden; cursor: pointer;">
@@ -41,7 +41,7 @@
     <!-- Title -->
     <p style="margin: 0 0 6px; font-size: 13px; color: #555; font-weight: 600;">Event Title</p>
     <div style="background: white; border-radius: 18px; padding: 2px 12px;
-                border: 1px solid rgba(217, 90, 127, 0.18); margin-bottom: 14px;">
+                border: 1px solid rgba(13, 62, 45, 0.08); margin-bottom: 14px;">
       <ion-input [(ngModel)]="form.title"
         placeholder="e.g., Annual Tech Symposium"
         style="--color: #333; --placeholder-color: #bbb;">
@@ -53,10 +53,10 @@
     <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;">
       <div *ngFor="let cat of categories"
         (click)="form.category = cat"
-        [style.background]="form.category === cat ? '#13224D' : 'white'"
+        [style.background]="form.category === cat ? '#0D3E2D' : 'white'"
         [style.color]="form.category === cat ? 'white' : '#555'"
         style="padding: 6px 16px; border-radius: 20px; font-size: 13px;
-               font-weight: 600; cursor: pointer; border: 1px solid rgba(19, 34, 77, 0.12);">
+               font-weight: 600; cursor: pointer; border: 1px solid rgba(13, 62, 45, 0.12);">
         {{ cat }}
       </div>
     </div>
@@ -64,9 +64,9 @@
     <!-- Date -->
     <p style="margin: 0 0 6px; font-size: 13px; color: #555; font-weight: 600;">Date</p>
     <div style="background: white; border-radius: 18px; padding: 2px 12px;
-                border: 1px solid rgba(217, 90, 127, 0.18); margin-bottom: 14px;
+                border: 1px solid rgba(13, 62, 45, 0.08); margin-bottom: 14px;
                 display: flex; align-items: center;">
-      <ion-icon name="calendar-outline" style="color: #D95A7F; font-size: 18px;"></ion-icon>
+      <ion-icon name="calendar-outline" style="color: #0D3E2D; font-size: 18px;"></ion-icon>
       <ion-input type="date" [(ngModel)]="form.date"
         style="--color: #333; font-size: 14px;">
       </ion-input>
@@ -75,9 +75,9 @@
     <!-- Time -->
     <p style="margin: 0 0 6px; font-size: 13px; color: #555; font-weight: 600;">Time</p>
     <div style="background: white; border-radius: 18px; padding: 2px 12px;
-                border: 1px solid rgba(217, 90, 127, 0.18); margin-bottom: 14px;
+                border: 1px solid rgba(13, 62, 45, 0.08); margin-bottom: 14px;
                 display: flex; align-items: center;">
-      <ion-icon name="time-outline" style="color: #D95A7F; font-size: 18px;"></ion-icon>
+      <ion-icon name="time-outline" style="color: #0D3E2D; font-size: 18px;"></ion-icon>
       <ion-input type="time" [(ngModel)]="form.time"
         style="--color: #333; font-size: 14px;">
       </ion-input>
@@ -97,9 +97,9 @@
     <!-- Location -->
     <p style="margin: 0 0 6px; font-size: 13px; color: #555; font-weight: 600;">Location</p>
     <div style="background: white; border-radius: 18px; padding: 2px 12px;
-                border: 1px solid rgba(217, 90, 127, 0.18); margin-bottom: 14px;
+                border: 1px solid rgba(13, 62, 45, 0.08); margin-bottom: 14px;
                 display: flex; align-items: center;">
-      <ion-icon name="location-outline" style="color: #D95A7F; font-size: 18px;"></ion-icon>
+      <ion-icon name="location-outline" style="color: #0D3E2D; font-size: 18px;"></ion-icon>
       <ion-input [(ngModel)]="form.location"
         placeholder="e.g., Campus Quad or Engineering Hall"
         style="--color: #333; --placeholder-color: #bbb;">
@@ -118,14 +118,14 @@
 
     <!-- Publish -->
     <ion-button expand="block" (click)="saveEvent(false)"
-      style="--background: #13224D; --border-radius: 30px;
+      style="--background: #0D3E2D; --border-radius: 30px;
              --color: white; font-weight: 700; height: 52px; margin-bottom: 12px;">
       {{ editingId ? 'Update Event' : 'Publish Event' }}
     </ion-button>
 
     <!-- Draft -->
     <ion-button expand="block" fill="outline" (click)="saveEvent(true)"
-      style="--border-color: #13224D; --color: #13224D; --border-radius: 30px;
+      style="--border-color: #0D3E2D; --color: #0D3E2D; --border-radius: 30px;
              font-weight: 600; height: 48px; margin-bottom: 20px;">
       Save as Draft
     </ion-button>

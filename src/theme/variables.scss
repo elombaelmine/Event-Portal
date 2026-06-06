@@ -1,34 +1,42 @@
 // For information on how to create your own theme, please refer to:
 // https://ionicframework.com/docs/theming/
 :root {
-  /* Primary Deep Navy */
-  --ion-color-primary: #13224D;
-  --ion-color-primary-rgb: 19, 34, 77;
+  /* Dark Emerald */
+  --ion-color-primary: #0D3E2D;
+  --ion-color-primary-rgb: 13, 62, 45;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #101d43;
-  --ion-color-primary-tint: #243a6f;
+  --ion-color-primary-shade: #0B3727;
+  --ion-color-primary-tint: #2E6C58;
 
-  /* Hot Pink Accent */
-  --ion-color-secondary: #FF4D82;
-  --ion-color-secondary-rgb: 255, 77, 130;
+  /* Forest Green */
+  --ion-color-secondary: #1E6B45;
+  --ion-color-secondary-rgb: 30, 107, 69;
   --ion-color-secondary-contrast: #ffffff;
   --ion-color-secondary-contrast-rgb: 255, 255, 255;
-  --ion-color-secondary-shade: #e24274;
-  --ion-color-secondary-tint: #ff6694;
+  --ion-color-secondary-shade: #195D3D;
+  --ion-color-secondary-tint: #3D8F6F;
 
-  /* Soft Blush / Pastel */
-  --ion-color-tertiary: #F8D3DD;
-  --ion-color-tertiary-rgb: 248, 211, 221;
-  --ion-color-tertiary-contrast: #13224D;
-  --ion-color-tertiary-shade: #e8c0ce;
-  --ion-color-tertiary-tint: #f9d7e3;
+  /* Sage Green */
+  --ion-color-tertiary: #B8CBA0;
+  --ion-color-tertiary-rgb: 184, 203, 160;
+  --ion-color-tertiary-contrast: #0D3E2D;
+  --ion-color-tertiary-shade: #A1B38B;
+  --ion-color-tertiary-tint: #C6D6AE;
 
-  --ion-color-success: #D95A7F;
-  --ion-color-medium: #C59AB6;
-  --ion-color-light: #FDF7F8;
+  /* Gold Accent */
+  --ion-color-warning: #C8A24C;
+  --ion-color-warning-rgb: 200, 162, 76;
+  --ion-color-warning-contrast: #0D3E2D;
+  --ion-color-warning-contrast-rgb: 13, 62, 45;
+  --ion-color-warning-shade: #B39245;
+  --ion-color-warning-tint: #D7B571;
+
+  --ion-color-success: #1E6B45;
+  --ion-color-medium: #8CA179;
+  --ion-color-light: #F4EFE2;
 
   /* Backgrounds */
-  --ion-background-color: #FCF3F6;
-  --ion-text-color: #13224D;
+  --ion-background-color: #F4EFE2;
+  --ion-text-color: #0D3E2D;
 }
