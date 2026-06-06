@@ -40,9 +40,10 @@
       font-size: 20px;
     }
 
-    ion-select {
+    // CHANGE THIS FROM ion-select TO ion-input
+    ion-input {
       width: 100%;
-      color: #13224D;
+      --color: #13224D; /* Explicitly sets the text input color */
     }
   }
 

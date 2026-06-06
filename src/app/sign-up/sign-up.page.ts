@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
@@ -7,8 +7,8 @@ import { addIcons } from 'ionicons';
 import { lockClosedOutline, mailOutline, peopleOutline, personOutline, callOutline } from 'ionicons/icons';
 import { Auth, createUserWithEmailAndPassword } from '@angular/fire/auth';
 import { Firestore, doc, setDoc } from '@angular/fire/firestore';
-import { inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+// FIXED: Changed from '@angular/fire/http' back to Angular's native common HTTP package
+import { HttpClient, HttpHeaders } from '@angular/common/http'; 
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -25,7 +25,6 @@ export class SignUpPage implements OnInit {
   private router = inject(Router);
   private http = inject(HttpClient);
 
-  // Added missing data variables
   fullName: string = '';
   email: string = '';
   phone: string = '';
@@ -37,21 +36,23 @@ export class SignUpPage implements OnInit {
     const cleanPhone = this.phone ? this.phone.trim() : '';
     const cleanPassword = this.password ? this.password.trim() : '';
 
-    // Structural validation check
     if (!cleanFullName || !cleanEmail || !cleanPhone || !cleanPassword) {
       alert("Please fill in all fields before registering.");
       return;
     }
 
-    // 1. Generate the 6-digit code BEFORE creating the user
     const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
 
+    // Context reference fix
+    const databaseContext = this.firestore;
+
     try {
-      // 2. Create the user in Firebase Auth
+      // 1. Create user account credentials with Firebase Auth
       const creds = await createUserWithEmailAndPassword(this.auth, cleanEmail, cleanPassword);
       
-      // 3. Save to Firestore (Now including the structural profile elements!)
-      await setDoc(doc(this.firestore, 'users', creds.user.uid), {
+      // 2. Save profile document using our pre-cached context reference
+      const userDocRef = doc(databaseContext, 'users', creds.user.uid);
+      await setDoc(userDocRef, {
         fullName: cleanFullName,
         email: cleanEmail,
         phoneNumber: cleanPhone,
@@ -61,7 +62,7 @@ export class SignUpPage implements OnInit {
         createdAt: new Date()
       });
 
-      // 4. Send the Email via Brevo API
+      // 3. Construct Brevo payload
       const brevoUrl = environment.BREVO_API_URL;
       const apiKey = environment.BREVO_API_KEY;
 
@@ -84,7 +85,7 @@ export class SignUpPage implements OnInit {
         'Content-Type': 'application/json'
       });
 
-      // 5. Execute HTTP request and redirect to verification route
+      // 4. Send Verification Outbox Payload
       this.http.post(brevoUrl, emailBody, { headers }).subscribe({
         next: () => {
           console.log("Code sent to Brevo successfully!");
@@ -92,17 +93,17 @@ export class SignUpPage implements OnInit {
         },
         error: (err: any) => {
           console.error("Brevo API Error:", err);
-          alert("Account created, but email failed. Check your API key and verified sender.");
+          alert("Account created, but verification email failed to send.");
         }
       });
 
     } catch (error: any) {
+      console.error("Signup internal block error:", error);
       alert("Signup Error: " + error.message);
     }
   }
 
   constructor() {
-    // Registered callOutline so the icon renders on screen
     addIcons({
       personOutline,
       mailOutline, 
