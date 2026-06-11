@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Auth, authState } from '@angular/fire/auth';
-import { Firestore, collection, collectionData } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, query, where } from '@angular/fire/firestore';
 import { addIcons } from 'ionicons';
 import { chevronBackOutline, chevronForwardOutline, calendarOutline } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
@@ -53,22 +53,24 @@ export class CalenderPage implements OnInit, OnDestroy {
   }
 
   loadFirestoreCalendarData() {
-    // 1. Fetch overall general campus events to light up "Has Event" status dots
+    //  Fetch overall general campus events to light up "Has Event" status dots
     const eventsRef = collection(this.firestore, 'events');
     const eventsSub = collectionData(eventsRef).subscribe((events: any[]) => {
       this.allEventDates = events
-        .filter(e => e.date && e.status !== 'Draft')
-        .map(e => e.date); // e.g. '2026-05-23'
+        .map(e => this.normalizeDateKey(e.date))
+        .filter(Boolean) as string[];
     });
     this.dataSubs.push(eventsSub);
 
-    // 2. Fetch registrations belonging specifically to this logged-in student user
+    //  Fetch registrations belonging specifically to this logged-in student user
     const regRef = collection(this.firestore, 'registrations');
-    const regSub = collectionData(regRef).subscribe((regs: any[]) => {
-      // Filters list to rows where matching studentId corresponds with current user session identity
+    const regQuery = query(regRef, where('userId', '==', this.currentUserId));
+    const regSub = collectionData(regQuery).subscribe((regs: any[]) => {
       const studentRegs = regs.filter(r => r.studentId === this.currentUserId || r.userId === this.currentUserId);
-      
-      this.registeredDates = studentRegs.map(r => r.eventDate).filter(Boolean);
+
+      this.registeredDates = studentRegs
+        .map(r => this.normalizeDateKey(r.eventDate) || this.normalizeDateKey(r.eventStartTime))
+        .filter(Boolean) as string[];
       this.registeredEventsList = studentRegs;
     });
     this.dataSubs.push(regSub);
@@ -104,12 +106,44 @@ export class CalenderPage implements OnInit, OnDestroy {
     this.calendarDays = daysArray;
   }
 
+  private pad(value: number): string {
+    return String(value).padStart(2, '0');
+  }
+
+  private formatDateKey(date: Date): string {
+    return `${date.getFullYear()}-${this.pad(date.getMonth() + 1)}-${this.pad(date.getDate())}`;
+  }
+
+  private normalizeDateKey(value: any): string | null {
+    if (!value) return null;
+
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+        return trimmed;
+      }
+      const parsed = new Date(trimmed);
+      if (!isNaN(parsed.getTime())) {
+        return this.formatDateKey(parsed);
+      }
+      return null;
+    }
+
+    if (value instanceof Date) {
+      return this.formatDateKey(value);
+    }
+
+    if (typeof value === 'object' && typeof value.toDate === 'function') {
+      return this.formatDateKey(value.toDate());
+    }
+
+    return null;
+  }
+
   // Helper utility to match calendar grid days to database date string keys (YYYY-MM-DD)
   private getFormattedStringDate(day: number): string {
-    const year = this.currentDate.getFullYear();
-    const month = String(this.currentDate.getMonth() + 1).padStart(2, '0');
-    const dayStr = String(day).padStart(2, '0');
-    return `${year}-${month}-${dayStr}`;
+    const date = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day);
+    return this.formatDateKey(date);
   }
 
   isRegistered(day: number | null): boolean {
