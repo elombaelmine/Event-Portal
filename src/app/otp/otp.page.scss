@@ -6,13 +6,13 @@
 
 .otp-input-group {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin: 30px 0;
-  gap: 10px;
+  gap: clamp(6px, 2vw, 10px);
 
   .otp-box {
-    width: 62px;
-    height: 62px;
+    width: clamp(42px, 13vw, 62px);
+    height: clamp(48px, 13vw, 62px);
     text-align: center;
     font-size: 24px;
     font-weight: 800;
@@ -56,6 +56,7 @@ ion-header {
 
 ion-toolbar {
   --background: #ffffff;
+  --color: #0D3E2D;
   --border-width: 0;
   padding-top: 8px;
   padding-bottom: 8px;
@@ -72,4 +73,30 @@ ion-title {
 
 ion-back-button {
   --color: #C8A24C;
+}
+
+.auth-screen {
+  --background: linear-gradient(145deg, #f7f4ec 0%, #edf3ec 100%);
+}
+
+.auth-container {
+  width: min(100%, 500px);
+  margin: 0 auto;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(20px, 5vw, 36px);
+}
+
+.header {
+  text-align: center;
+}
+
+.auth-btn {
+  --background: #0D3E2D;
+  --color: #ffffff;
+  --border-radius: 8px;
+  height: 54px;
+  font-weight: 800;
 }

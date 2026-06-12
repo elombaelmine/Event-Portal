@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,8 +11,9 @@ import {
 import { addIcons } from 'ionicons';
 import {
   personOutline, cameraOutline, pencilOutline,
-  logOutOutline, shieldCheckmarkOutline
+  logOutOutline, shieldCheckmarkOutline, lockClosedOutline
 } from 'ionicons/icons';
+import { Subscription, combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -25,11 +26,12 @@ import {
     IonButton, IonIcon, IonInput
   ]
 })
-export class ProfilePage implements OnInit {
+export class ProfilePage {
 
   private auth = inject(Auth);
   private firestore = inject(Firestore);
   private router = inject(Router);
+  private dataStreamSub?: Subscription;
 
   userData: any = {
     fullName: '',
@@ -42,34 +44,81 @@ export class ProfilePage implements OnInit {
   profileImage = '';
   editing = '';
   totalJoined = 0;
+  totalUnjoined = 0; 
 
   constructor() {
     addIcons({
       personOutline, cameraOutline, pencilOutline,
-      logOutOutline, shieldCheckmarkOutline
+      logOutOutline, shieldCheckmarkOutline, lockClosedOutline
     });
   }
 
-  async ngOnInit() {
+  async ionViewWillEnter() {
     const user = this.auth.currentUser;
     if (!user) {
       this.router.navigate(['/login']);
       return;
     }
 
-    // load user data from Firestore
-    const userDoc = await getDoc(doc(this.firestore, 'users', user.uid));
-    if (userDoc.exists()) {
-      this.userData = userDoc.data();
-      this.profileImage = this.userData.profileImage || '';
-    }
+    this.userData.email = user.email || '';
 
-    // load total joined events
-    const regsCol = collection(this.firestore, 'registrations');
-    const q = query(regsCol, where('userId', '==', user.uid));
-    collectionData(q).subscribe((regs: any[]) => {
-      this.totalJoined = regs.length;
-    });
+    try {
+      const userDoc = await getDoc(doc(this.firestore, 'users', user.uid));
+      if (userDoc.exists()) {
+        this.userData = userDoc.data();
+        if (!this.userData.email) {
+          this.userData.email = user.email || '';
+        }
+        this.profileImage = this.userData.profileImage || '';
+      }
+
+      this.unsubscribeStreams();
+
+      // 1. Get user's active registrations
+      const regsCol = collection(this.firestore, 'registrations');
+      const regsQuery = query(regsCol, where('userId', '==', user.uid));
+
+      // 2. Get all upcoming, visible campus events (Matching Admin criteria)
+      const eventsCol = collection(this.firestore, 'events');
+      const upcomingEventsQuery = query(eventsCol, where('status', '==', 'Upcoming'));
+
+      // Listen to both streams simultaneously
+      this.dataStreamSub = combineLatest([
+        collectionData(regsQuery),
+        collectionData(upcomingEventsQuery)
+      ]).subscribe({
+        next: ([regs, upcomingEvents]) => {
+          const now = new Date();
+          
+          // Count active event registrations safely
+          this.totalJoined = regs ? regs.length : 0;
+
+          // Double check filter to get only real, non-draft upcoming events
+          const validUpcomingEvents = (upcomingEvents || []).filter((e: any) => {
+            const end = new Date(e.endTime);
+            return !e.isDraft && end >= now;
+          });
+
+          // Math: Total Events available minus the ones the user joined
+          const calculation = validUpcomingEvents.length - this.totalJoined;
+          this.totalUnjoined = calculation > 0 ? calculation : 0;
+        },
+        error: (err) => console.error("Error updating account metrics stream:", err)
+      });
+
+    } catch (error) {
+      console.error("Profile loading breakdown:", error);
+    }
+  }
+
+  ionViewLeave() {
+    this.unsubscribeStreams();
+  }
+
+  private unsubscribeStreams() {
+    if (this.dataStreamSub) {
+      this.dataStreamSub.unsubscribe();
+    }
   }
 
   startEdit(field: string) {
@@ -105,7 +154,10 @@ export class ProfilePage implements OnInit {
   }
 
   async logout() {
+    this.unsubscribeStreams();
     await signOut(this.auth);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login']).then(() => {
+      window.location.reload();
+    });
   }
 }

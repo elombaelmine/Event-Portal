@@ -1,230 +1,112 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar style="--background: #004d40; color: #ffffff; padding: 4px 8px;">
-    <ion-title style="font-weight: 700; letter-spacing: 0.5px;">IUSJC Events</ion-title>
+  <ion-toolbar>
+    <ion-title style="font-weight: 700;">IUSJC Events</ion-title>
     <ion-buttons slot="end">
-
-      <!-- Notification Bell with badge -->
-      <div style="position: relative; margin-right: 12px; cursor: pointer;"
-        (click)="openNotifications()">
-        <ion-icon name="notifications-outline"
-          style="font-size: 26px; color: #ffffff;"></ion-icon>
-        <!-- Red badge -->
-        <div *ngIf="notificationCount > 0"
-          style="position: absolute; top: -4px; right: -4px;
-                 background: #e63946; color: white; border-radius: 50%;
-                 width: 18px; height: 18px; font-size: 10px; font-weight: 700;
-                 display: flex; align-items: center; justify-content: center;
-                 border: 2px solid #004d40;">
+      
+      <button class="icon-action" type="button" (click)="openNotifications()" aria-label="Notifications">
+        <ion-icon name="notifications-outline"></ion-icon>
+        <span *ngIf="notificationCount > 0" class="notification-badge">
           {{ notificationCount > 9 ? '9+' : notificationCount }}
-        </div>
-      </div>
+        </span>
+      </button>
 
-      <!-- Profile icon -->
-      <div (click)="goToProfile()"
-        style="width: 34px; height: 34px; border-radius: 50%;
-               overflow: hidden; border: 2px solid white;
-               display: flex; align-items: center; justify-content: center;
-               cursor: pointer; margin-right: 4px; background: #e8f4f5;">
-        <img *ngIf="profileImage" [src]="profileImage"
-          style="width: 100%; height: 100%; object-fit: cover;"/>
-        <ion-icon *ngIf="!profileImage" name="person-circle-outline"
-          style="font-size: 28px; color: #004d40;"></ion-icon>
-      </div>
-
+      <button class="avatar-button" type="button" (click)="goToProfile()" aria-label="Profile">
+        <img *ngIf="profileImage" [src]="profileImage" alt="Profile image"/>
+        <ion-icon *ngIf="!profileImage" name="person-circle-outline"></ion-icon>
+      </button>
     </ion-buttons>
   </ion-toolbar>
 
-  <ion-toolbar style="--background: #004d40; padding: 0 8px 8px;">
-    <div style="max-width: 600px; margin: 0 auto; width: 100%;">
+  <ion-toolbar class="search-toolbar">
+    <div class="search-wrap">
       <ion-searchbar
         [(ngModel)]="searchQuery"
         (ionInput)="onSearchChange()"
         (ionClear)="onSearchChange()"
         placeholder="Search campus events..."
-        mode="ios"
-        style="--background: #ffffff; --color: #333333;
-               --placeholder-color: #757575; --icon-color: #004d40; margin: 0;">
+        mode="ios">
       </ion-searchbar>
     </div>
   </ion-toolbar>
 </ion-header>
 
-<!-- Notifications Panel (slides down when bell clicked) -->
-<div *ngIf="showNotifications"
-  style="position: fixed; top: 104px; right: 0; left: 0; z-index: 999;
-         background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-         max-height: 60vh; overflow-y: auto; border-radius: 0 0 16px 16px;">
-
-  <div style="padding: 12px 16px; border-bottom: 1px solid #f0f0f0;
-              display: flex; justify-content: space-between; align-items: center;">
-    <h4 style="margin: 0; color: #004d40; font-weight: 700;">Notifications</h4>
-    <span (click)="markAllRead()"
-      style="font-size: 12px; color: #0a9396; cursor: pointer; font-weight: 600;">
-      Mark all read
-    </span>
-  </div>
-
-  <div *ngFor="let notif of notifications"
-    (click)="markRead(notif)"
-    [style.background]="notif.read ? 'white' : '#f0f7f8'"
-    style="padding: 12px 16px; border-bottom: 1px solid #f5f5f5;
-           display: flex; align-items: flex-start; gap: 12px; cursor: pointer;">
-
-    <div [style.background]="getNotifColor(notif.type)"
-      style="border-radius: 50%; width: 36px; height: 36px; flex-shrink: 0;
-             display: flex; align-items: center; justify-content: center;">
-      <ion-icon [name]="getNotifIcon(notif.type)"
-        style="color: white; font-size: 16px;"></ion-icon>
+<ion-content>
+  <div class="page-shell">
+    <div class="feed-hero">
+      <div>
+        <p class="eyebrow">Student dashboard</p>
+        <h1>Upcoming Campus Events</h1>
+      </div>
+      <span>Live feed</span>
     </div>
 
-    <div style="flex: 1;">
-      <p style="margin: 0 0 2px; font-weight: 700; color: #004d40; font-size: 13px;">
-        {{ notif.title }}
-      </p>
-      <p style="margin: 0 0 2px; color: #555; font-size: 12px;">
-        {{ notif.message }}
-      </p>
-      <p style="margin: 0; color: #aaa; font-size: 11px;">
-        {{ notif.time | date:'MMM d, h:mm a' }}
-      </p>
-    </div>
-
-    <div *ngIf="!notif.read"
-      style="width: 8px; height: 8px; border-radius: 50%;
-             background: #e63946; flex-shrink: 0; margin-top: 4px;">
-    </div>
-  </div>
-
-  <div *ngIf="notifications.length === 0"
-    style="text-align: center; padding: 30px; color: #999;">
-    <ion-icon name="notifications-outline"
-      style="font-size: 36px; color: #0a9396;"></ion-icon>
-    <p style="font-size: 13px; margin-top: 8px;">No notifications yet.</p>
-  </div>
-
-</div>
-
-<ion-content style="--background: #f8f9fa;">
-  <div style="max-width: 600px; margin: 0 auto; padding: 20px 16px;">
-
-    <div style="display: flex; justify-content: space-between;
-                align-items: center; margin-bottom: 20px;">
-      <h3 style="margin: 0; font-size: 1.2rem; font-weight: 700; color: #004d40;">
-        Upcoming Campus Events
-      </h3>
-      <span style="font-size: 0.8rem; font-weight: 600; color: #d4af37;
-                   text-transform: uppercase; letter-spacing: 0.5px;">
-        Live feed
-      </span>
-    </div>
-
-    <div>
-      <div *ngIf="filteredEvents.length === 0 && searchQuery"
-        style="text-align: center; padding: 30px; color: #999;">
-        <ion-icon name="search-outline"
-          style="font-size: 40px; color: #0a9396;"></ion-icon>
-        <p style="font-size: 14px; margin-top: 8px;">
-          No events found for "{{ searchQuery }}"
-        </p>
+    <div class="events-grid">
+      <div *ngIf="filteredEvents.length === 0 && searchQuery" class="empty-state grid-full">
+        <ion-icon name="search-outline"></ion-icon>
+        <p>No events found for "{{ searchQuery }}"</p>
       </div>
 
-      <div *ngIf="filteredEvents.length === 0 && !searchQuery"
-        style="text-align: center; padding: 50px 20px; color: #757575;">
-        <ion-icon name="calendar-outline"
-          style="font-size: 52px; color: #ccc; margin-bottom: 12px;"></ion-icon>
-        <p style="font-size: 1rem; font-weight: 500;">
-          No active campus events posted yet.
-        </p>
+      <div *ngIf="filteredEvents.length === 0 && !searchQuery" class="empty-state grid-full">
+        <ion-icon name="calendar-outline"></ion-icon>
+        <p>No active campus events posted yet.</p>
       </div>
 
-      <div *ngFor="let item of filteredEvents"
-        style="background: #ffffff; border-radius: 16px; margin-bottom: 24px;
-               box-shadow: 0 6px 20px rgba(0, 77, 64, 0.06); overflow: hidden;
-               border: 1px solid rgba(0, 0, 0, 0.04);">
-
-        <div *ngIf="item.imageUrl"
-          style="width: 100%; height: 180px; overflow: hidden;
-                 background: #e8f4f5; position: relative;">
-          <img [src]="item.imageUrl"
-            style="width: 100%; height: 100%; object-fit: cover;"/>
+      <article *ngFor="let item of filteredEvents" class="event-card">
+        <div *ngIf="item.imageUrl" class="event-media">
+          <img [src]="item.imageUrl" alt="Event cover"/>
         </div>
 
-        <div *ngIf="!item.imageUrl"
-          style="height: 6px; background: #d4af37;"></div>
+        <div *ngIf="!item.imageUrl" class="event-accent"></div>
 
-        <div style="padding: 18px;">
-          <span style="display: inline-block; background: #e8f4f5; color: #004d40;
-                       padding: 4px 12px; border-radius: 20px; font-size: 0.72rem;
-                       font-weight: 700; margin-bottom: 10px; text-transform: uppercase;
-                       letter-spacing: 0.3px;">
-            {{ item.category || 'General' }}
-          </span>
+        <div class="event-body">
+          <span class="category-pill">{{ item.category || 'General' }}</span>
+          <h2>{{ item.title }}</h2>
 
-          <h2 style="margin: 0 0 14px; font-size: 1.3rem; font-weight: 700;
-                     color: #004d40; line-height: 1.35;">
-            {{ item.title }}
-          </h2>
-
-          <div style="display: grid; gap: 10px; margin-bottom: 18px;
-                      border-bottom: 1px dashed #e2e8f0; padding-bottom: 14px;">
-            <div style="display: flex; align-items: center;
-                        color: #4a5568; font-size: 0.92rem;">
-              <ion-icon name="calendar-outline"
-                style="color: #d4af37; margin-right: 10px; font-size: 18px; width: 20px;">
-              </ion-icon>
-              <span style="font-weight: 500;">{{ item.date || 'TBA' }}</span>
+          <div class="event-meta">
+            <div>
+              <ion-icon name="calendar-outline"></ion-icon>
+              <span>{{ item.date || 'TBA' }}</span>
             </div>
-
-            <div style="display: flex; align-items: center;
-                        color: #4a5568; font-size: 0.92rem;">
-              <ion-icon name="time-outline"
-                style="color: #d4af37; margin-right: 10px; font-size: 18px; width: 20px;">
-              </ion-icon>
-              <span style="font-weight: 500;">{{ item.time || 'TBA' }}</span>
+            <div>
+              <ion-icon name="time-outline"></ion-icon>
+              <span>{{ item.time || 'TBA' }}</span>
             </div>
-
-            <div style="display: flex; align-items: center;
-                        color: #4a5568; font-size: 0.92rem;">
-              <ion-icon name="location-outline"
-                style="color: #d4af37; margin-right: 10px; font-size: 18px; width: 20px;">
-              </ion-icon>
-              <span style="font-weight: 500; white-space: nowrap; overflow: hidden;
-                           text-overflow: ellipsis;">
-                {{ item.location || 'Campus Venue TBA' }}
-              </span>
+            <div>
+              <ion-icon name="location-outline"></ion-icon>
+              <span>{{ item.location || 'Campus Venue TBA' }}</span>
             </div>
           </div>
 
-          <p style="margin: 0 0 20px; color: #64748b; font-size: 0.92rem;
-                    line-height: 1.6; font-weight: 400;">
+          <p class="event-description">
             {{ item.description || 'No additional details provided.' }}
           </p>
 
-          <div style="display: flex; justify-content: flex-end;
-                      align-items: center; padding-top: 4px;">
-            <ion-button fill="solid" mode="ios"
-              (click)="registerForEvent(item)"
-              [style.--background]="isJoined(item.id) ? '#2d9e6b' : '#004d40'"
-              style="--color: #ffffff; font-weight: 700; font-size: 0.88rem;
-                     margin: 0; height: 42px; width: 130px; --border-radius: 10px;">
-              {{ isJoined(item.id) ? '✓ Joined' : 'Join Event' }}
+          <div class="event-actions">
+            <ion-button 
+              *ngIf="!isJoined(item.id)"
+              fill="solid" 
+              mode="ios"
+              style="--background: #004d40; --color: #ffffff;"
+              (click)="registerForEvent(item)">
+              Join Event
+            </ion-button>
+
+            <ion-button 
+              *ngIf="isJoined(item.id)"
+              fill="outline" 
+              mode="ios"
+              style="--border-color: #cccccc; --color: #333333; --background: #ffffff;"
+              (click)="unjoinEvent(item)">
+              Leave Event
             </ion-button>
           </div>
         </div>
+      </article>
+
+      <div *ngIf="allEvents.length === 0 && !searchQuery" class="loading-state grid-full">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Syncing campus bulletin feeds...</p>
       </div>
-
-  
-
     </div>
-
-    <!-- Loading state -->
-    <div *ngIf="allEvents.length === 0 && !searchQuery"
-      style="text-align: center; padding: 60px 0; color: #004d40;">
-      <ion-spinner name="crescent" style="--color: #004d40;"></ion-spinner>
-      <p style="margin-top: 12px; font-size: 0.95rem; font-weight: 600; color: #64748b;">
-        Syncing campus bulletin feeds...
-      </p>
-    </div>
-
   </div>
 </ion-content>

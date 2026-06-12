@@ -1,0 +1,373 @@
+.search-toolbar {
+  padding: 0 8px 10px;
+  // Forces the toolbar wrapper to adapt cleanly to native Android viewports
+  --background: #0d3e2d; 
+  --border-width: 0;
+}
+
+.search-wrap {
+  width: min(100%, 720px);
+  margin: 0 auto;
+}
+
+ion-searchbar {
+  --background: #ffffff;
+  --color: #23342d;
+  --placeholder-color: #718074;
+  --icon-color: #0d3e2d;
+  --border-radius: 8px;
+  padding: 0;
+  margin: 0;
+}
+
+.icon-action,
+.avatar-button {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.icon-action ion-icon {
+  font-size: 25px;
+}
+
+.notification-badge {
+  position: absolute;
+  top: 1px;
+  right: 0;
+  display: grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border: 2px solid #0d3e2d;
+  border-radius: 999px;
+  background: var(--app-danger);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.avatar-button {
+  overflow: hidden;
+  margin-right: 4px;
+  background: #edf3ec;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+}
+
+.avatar-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-button ion-icon {
+  color: #0d3e2d;
+  font-size: 28px;
+}
+
+.notifications-panel {
+  position: fixed;
+  /* Replaces fixed 104px layout metrics with an adaptable layer calc */
+  top: max(96px, env(safe-area-inset-top, 0px) + 56px);
+  right: 12px;
+  left: 12px;
+  z-index: 999;
+  max-height: min(520px, 62vh);
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid var(--app-border);
+  border-radius: 8px; /* Cleaned up border logic for a consistent phone overlay */
+  box-shadow: 0 18px 44px rgba(13, 62, 45, 0.18);
+}
+
+.notifications-head,
+.notification-row {
+  display: flex;
+  align-items: center;
+}
+
+.notifications-head {
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(13, 62, 45, 0.1);
+}
+
+.notifications-head h4 {
+  margin: 0;
+  color: var(--app-ink);
+  font-weight: 800;
+}
+
+.notifications-head button {
+  border: 0;
+  background: transparent;
+  color: #1e6b45;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.notification-row {
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(13, 62, 45, 0.08);
+  cursor: pointer;
+}
+
+.notification-icon {
+  display: grid;
+  flex: 0 0 36px;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+}
+
+.notification-icon ion-icon {
+  color: #ffffff;
+  font-size: 16px;
+}
+
+.notification-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-copy p,
+.notification-copy time {
+  display: block;
+  margin: 0 0 3px;
+  color: #5b6c5c;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.notification-copy .notification-title {
+  color: var(--app-ink);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.unread-dot {
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  margin-top: 5px;
+  border-radius: 999px;
+  background: var(--app-danger);
+}
+
+.compact {
+  margin: 12px;
+  padding: 28px 16px;
+}
+
+.compact ion-icon,
+.empty-state ion-icon {
+  font-size: 40px;
+  color: #8ca179;
+}
+
+.feed-hero {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  padding: clamp(18px, 4vw, 30px);
+  margin-bottom: 22px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0d3e2d, #1e6b45);
+  border-radius: 8px;
+}
+
+.feed-hero h1 {
+  margin: 0;
+  font-size: clamp(1.45rem, 5vw, 2.6rem);
+  line-height: 1.1;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.feed-hero span,
+.category-pill {
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.feed-hero span {
+  padding: 7px 11px;
+  color: #0d3e2d;
+  background: #c8a24c;
+}
+
+.events-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+.grid-full {
+  grid-column: 1 / -1;
+}
+
+.event-card {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid var(--app-border);
+  border-radius: 8px;
+  box-shadow: var(--app-shadow);
+  border-radius:25px;
+
+}
+
+.event-media {
+  height: 190px;
+  background: #edf3ec;
+}
+
+.event-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.event-accent {
+  height: 6px;
+  background: #c8a24c;
+}
+
+.event-body {
+  display: flex;
+  min-height: 280px;
+  flex-direction: column;
+  padding: 18px;
+}
+
+.category-pill {
+  padding: 5px 11px;
+  margin-bottom: 12px;
+  color: #0d3e2d;
+  background: #edf3ec;
+}
+
+.event-body h2 {
+  margin: 0 0 14px;
+  color: #0d3e2d;
+  font-size: clamp(1.1rem, 3vw, 1.35rem);
+  line-height: 1.3;
+}
+
+.event-meta {
+  display: grid;
+  gap: 10px;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 1px dashed rgba(13, 62, 45, 0.18);
+}
+
+.event-meta div {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  color: #4f6357;
+  font-size: 0.92rem;
+}
+
+.event-meta ion-icon {
+  flex: 0 0 22px;
+  color: #c8a24c;
+  font-size: 18px;
+}
+
+.event-meta span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.event-description {
+  margin: 0 0 18px;
+  color: #66756b;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.event-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
+.event-actions ion-button {
+  width: 132px;
+  height: 42px;
+  margin: 0;
+  --background: #0d3e2d;
+  --color: #ffffff;
+  --border-radius: 8px;
+  --box-shadow: none;
+}
+
+.event-actions ion-button.joined {
+  --background: #2d9e6b;
+}
+
+.loading-state {
+  padding: 52px 16px;
+  text-align: center;
+}
+
+.loading-state ion-spinner {
+  --color: #0d3e2d;
+}
+
+.loading-state p {
+  margin: 12px 0 0;
+  color: #66756b;
+  font-weight: 700;
+}
+
+@media (min-width: 680px) {
+  .events-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .notifications-panel {
+    left: auto;
+    right: 24px;
+    width: 420px;
+    border-radius: 8px;
+  }
+}
+
+@media (min-width: 1040px) {
+  .events-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 420px) {
+  .feed-hero {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

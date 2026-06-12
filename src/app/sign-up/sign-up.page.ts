@@ -4,10 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Router, RouterModule } from '@angular/router';
 import { addIcons } from 'ionicons';
-import { lockClosedOutline, mailOutline, peopleOutline, personOutline, callOutline } from 'ionicons/icons';
-import { Auth, createUserWithEmailAndPassword } from '@angular/fire/auth';
+import { lockClosedOutline, mailOutline, peopleOutline, personOutline, callOutline, eyeOutline, eyeOffOutline } from 'ionicons/icons';
+import { Auth, createUserWithEmailAndPassword, signOut } from '@angular/fire/auth';
 import { Firestore, doc, setDoc } from '@angular/fire/firestore';
-// FIXED: Changed from '@angular/fire/http' back to Angular's native common HTTP package
 import { HttpClient, HttpHeaders } from '@angular/common/http'; 
 import { environment } from 'src/environments/environment';
 
@@ -30,6 +29,13 @@ export class SignUpPage implements OnInit {
   phone: string = '';
   password: string = '';
    
+  // Controller state tracking for the password visibility toggle switcher
+  showPasswordState: boolean = false;
+
+  togglePasswordVisibility() {
+    this.showPasswordState = !this.showPasswordState;
+  }
+
   async submitSignup() {
     const cleanFullName = this.fullName ? this.fullName.trim() : '';
     const cleanEmail = this.email ? this.email.trim() : '';
@@ -42,15 +48,13 @@ export class SignUpPage implements OnInit {
     }
 
     const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // Context reference fix
     const databaseContext = this.firestore;
 
     try {
-      // 1. Create user account credentials with Firebase Auth
+      // 1. Create account credentials with Firebase Auth
       const creds = await createUserWithEmailAndPassword(this.auth, cleanEmail, cleanPassword);
       
-      // 2. Save profile document using our pre-cached context reference
+      // 2. Save profile document into Firestore database reference
       const userDocRef = doc(databaseContext, 'users', creds.user.uid);
       await setDoc(userDocRef, {
         fullName: cleanFullName,
@@ -62,7 +66,12 @@ export class SignUpPage implements OnInit {
         createdAt: new Date()
       });
 
-      // 3. Construct Brevo payload
+      // 3. Clear the automatic native login token instantly to block login state conflicts.
+      // We pass the parameters into query arguments so your verification page handles extraction.
+      const registeredUid = creds.user.uid;
+      await signOut(this.auth);
+
+      // 4. Construct Brevo template mailer payload
       const brevoUrl = environment.BREVO_API_URL;
       const apiKey = environment.BREVO_API_KEY;
 
@@ -74,7 +83,7 @@ export class SignUpPage implements OnInit {
           <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee;">
             <h2>Welcome to the IUSJC Event Portal, ${cleanFullName}!</h2>
             <p>Your 6-digit verification code is:</p>
-            <h1 style="color: #004a99; letter-spacing: 5px;">${generatedOtp}</h1>
+            <h1 style="color: #0D3E2D; letter-spacing: 5px;">${generatedOtp}</h1>
             <p>Enter this code in the app to activate your account.</p>
           </div>
         `
@@ -85,15 +94,22 @@ export class SignUpPage implements OnInit {
         'Content-Type': 'application/json'
       });
 
-      // 4. Send Verification Outbox Payload
+      // 5. Send Verification payload via HTTP post module
       this.http.post(brevoUrl, emailBody, { headers }).subscribe({
         next: () => {
           console.log("Code sent to Brevo successfully!");
-          this.router.navigate(['/otp']); 
+          // Pass context parameters securely over to the OTP screen layout template
+          this.router.navigate(['/otp'], { 
+            queryParams: { email: cleanEmail, uid: registeredUid } 
+          }); 
         },
         error: (err: any) => {
           console.error("Brevo API Error:", err);
           alert("Account created, but verification email failed to send.");
+          
+          this.router.navigate(['/otp'], { 
+            queryParams: { email: cleanEmail, uid: registeredUid } 
+          });
         }
       });
 
@@ -109,7 +125,9 @@ export class SignUpPage implements OnInit {
       mailOutline, 
       peopleOutline,
       lockClosedOutline,
-      callOutline
+      callOutline,
+      eyeOutline,
+      eyeOffOutline
     });
   }
 

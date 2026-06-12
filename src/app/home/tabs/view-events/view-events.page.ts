@@ -3,16 +3,17 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { Firestore, collection, collectionData, addDoc, query, where, doc, getDoc, docData } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, addDoc, query, where, doc, docData, updateDoc, deleteDoc, serverTimestamp } from '@angular/fire/firestore';
 import { Auth } from '@angular/fire/auth';
+import { combineLatest, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { addIcons } from 'ionicons';
-import { map } from 'rxjs';
 import {
   personCircleOutline, searchOutline, calendarOutline,
   locationOutline, timeOutline, notificationsOutline,
-  checkmarkCircleOutline, alertCircleOutline
+  checkmarkCircleOutline, alertCircleOutline, trashOutline,
+  closeCircleOutline
 } from 'ionicons/icons';
-
 
 @Component({
   selector: 'app-view-events',
@@ -30,11 +31,15 @@ export class ViewEventsPage implements OnInit {
   allEvents: any[] = [];
   filteredEvents: any[] = [];
   searchQuery: string = '';
-  joinedEventIds: string[] = [];
-  showNotifications = false;
   
+  userRegistrations: any[] = [];
+  joinedEventIds: string[] = [];
+  
+  showNotifications = false;
   notifications: any[] = [];
   profileImage = '';
+  
+  private globalClearedAt: Date | null = null;
 
   get notificationCount(): number {
     return this.notifications.filter(n => !n.read).length;
@@ -44,154 +49,124 @@ export class ViewEventsPage implements OnInit {
     addIcons({
       personCircleOutline, searchOutline, calendarOutline,
       locationOutline, timeOutline, notificationsOutline,
-      checkmarkCircleOutline, alertCircleOutline
+      checkmarkCircleOutline, alertCircleOutline, trashOutline,
+      closeCircleOutline
     });
   }
 
   ngOnInit() {
-    // load events
+    // 1. Load active system events cleanly
     const eventsCollection = collection(this.firestore, 'events');
     collectionData(eventsCollection, { idField: 'id' }).subscribe((events: any[]) => {
       this.allEvents = events.filter(
-        event => event.status === 'Upcoming' && !event.isDraft
+        event => event && event['status'] === 'Upcoming' && !event['isDraft']
       );
       this.applySearch();
     });
 
-    // listen for new events — detect truly new ones after first load
-    let isFirstLoad = true;
-    const seenEventIds: string[] = JSON.parse(
-      localStorage.getItem('seenEventIds') || '[]'
-    );
+    // 2. Load User Profile and bind Registrations & Notification Logs dynamically
+    const user = this.auth.currentUser;
+    if (user) {
+      const userDocRef = doc(this.firestore, 'users', user.uid);
+      const regsCollection = collection(this.firestore, 'registrations');
+      const regsQuery = query(regsCollection, where('userId', '==', user.uid));
 
-    collectionData(eventsCollection, { idField: 'id' }).subscribe((events: any[]) => {
-      const publishedEvents = events.filter(
-        e => !e.isDraft && e.status === 'Upcoming'
-      );
+      // NEW: Listen directly to the persistent logs to drive our dropdown bell badges
+      const notificationsCollection = collection(this.firestore, 'notifications');
+      const logsQuery = query(notificationsCollection, where('userId', '==', user.uid));
 
-      if (isFirstLoad) {
-        // on first load just mark all current events as seen
-        publishedEvents.forEach(e => {
-          if (!seenEventIds.includes(e.id)) {
-            seenEventIds.push(e.id);
+      docData(userDocRef).pipe(
+        switchMap((userProfile: any) => {
+          if (userProfile) {
+            this.profileImage = userProfile['profileImage'] || '';
+            this.globalClearedAt = userProfile?.['notificationsClearedAt'] ? userProfile['notificationsClearedAt'].toDate() : null;
           }
-        });
-        localStorage.setItem('seenEventIds', JSON.stringify(seenEventIds));
-        isFirstLoad = false;
-      } else {
-        // on subsequent updates detect truly new events
-        const newEvents = publishedEvents.filter(
-          e => !seenEventIds.includes(e.id)
-        );
+          return combineLatest([
+            collectionData(regsQuery, { idField: 'id' }),
+            collectionData(logsQuery, { idField: 'id' }),
+            collectionData(eventsCollection, { idField: 'id' })
+          ]);
+        })
+      ).subscribe({
+        next: ([regs, logs, events]) => {
+          // Track registrations strictly to keep the "Join/Leave" buttons accurate on dashboard UI
+          this.userRegistrations = regs || [];
+          this.joinedEventIds = this.userRegistrations.map((r: any) => r['eventId']).filter(Boolean);
+          
+          // Process alerts using the persistent logs collection instead of live registrations array
+          this.processSynchronizedAlerts(logs || [], events || []);
+        },
+        error: (err) => console.error("Error updating subscription streams:", err)
+      });
+    }
+  }
 
-        newEvents.forEach(e => {
-          const exists = this.notifications.find(n => n.id === e.id + '_new');
-          if (!exists) {
-            this.notifications.unshift({
-              id: e.id + '_new',
-              type: 'new',
-              title: '🎉 New Event Posted!',
-              message: `"${e.title}" on ${e.date || 'TBA'} at ${e.location || 'TBA'}`,
-              time: new Date(),
-              read: false
-            });
-          }
-          seenEventIds.push(e.id);
-          localStorage.setItem('seenEventIds', JSON.stringify(seenEventIds));
+  processSynchronizedAlerts(loggedNotifs: any[], events: any[]) {
+    const sortedNotifs: any[] = [];
+    const now = new Date();
+
+    const isNotificationValid = (notificationTime: Date) => {
+      if (!this.globalClearedAt) return true;
+      return notificationTime.getTime() > this.globalClearedAt.getTime();
+    };
+
+    // --- SOURCE A: Persistent Notification Logs (Now handles both Confirmation AND Cancellation ticks!) ---
+    loggedNotifs.forEach(log => {
+      if (!log) return;
+      
+      const logTime = log['createdAt'] ? new Date(log['createdAt']) : new Date();
+      
+      if (isNotificationValid(logTime)) {
+        sortedNotifs.push({
+          id: log.id,
+          type: log['category'] === 'Cancellation' ? 'alert' : 'success',
+          title: log['title'] || 'Update',
+          message: log['message'] || '',
+          time: logTime,
+          read: log['read'] !== undefined ? log['read'] : false
         });
       }
     });
 
-    // load user registrations and profile image
-    const user = this.auth.currentUser;
-    if (user) {
-      // load registrations
-      const regsCollection = collection(this.firestore, 'registrations');
-      const q = query(regsCollection, where('userId', '==', user.uid));
-      collectionData(q, { idField: 'id' }).subscribe((regs: any[]) => {
-        this.joinedEventIds = regs.map(r => r.eventId);
-        this.buildNotifications(regs);
-      });
+    // --- SOURCE B: New Board Bulletins ---
+    events.forEach(e => {
+      if (e && !e['isDraft'] && e['status'] === 'Upcoming' && e['createdAt']) {
+        const createdDate = new Date(e['createdAt']);
+        const ageInHours = (now.getTime() - createdDate.getTime()) / (1000 * 60 * 60);
 
-     // load profile image in real-time
-     
-      docData(doc(this.firestore, 'users', user.uid)).subscribe((data: any) => {
-        if (data) {
-          this.profileImage = data['profileImage'] || '';
+        if (ageInHours >= 0 && ageInHours <= 48 && isNotificationValid(createdDate)) {
+          sortedNotifs.push({
+            id: e['id'] + '_new',
+            type: 'new',
+            title: '🎉 New Event Posted!',
+            message: `"${e['title']}" on ${e['date'] || 'TBA'}`,
+            time: createdDate,
+            read: false
+          });
         }
-      });
-    }
+      }
+    });
+
+    // Clean sort and update UI elements immediately
+    this.notifications = sortedNotifs.sort((a, b) => b.time.getTime() - a.time.getTime());
   }
-applySearch() {
+
+  applySearch() {
     const q = this.searchQuery.trim().toLowerCase();
     if (!q) {
       this.filteredEvents = this.allEvents;
     } else {
       this.filteredEvents = this.allEvents.filter(e =>
-        e.title?.toLowerCase().includes(q) ||
-        e.location?.toLowerCase().includes(q) ||
-        e.category?.toLowerCase().includes(q) ||
-        e.description?.toLowerCase().includes(q)
+        e['title']?.toLowerCase().includes(q) ||
+        e['location']?.toLowerCase().includes(q) ||
+        e['category']?.toLowerCase().includes(q) ||
+        e['description']?.toLowerCase().includes(q)
       );
     }
   }
 
   onSearchChange() {
     this.applySearch();
-  }
-  buildNotifications(regs: any[]) {
-    const notifs: any[] = [];
-    const now = new Date();
-
-   regs.forEach(reg => {
-      // registration confirmation — use eventId to prevent duplicates
-      const confirmId = reg.eventId + '_joined';
-      const alreadyExists = notifs.find(n => n.id === confirmId);
-      if (!alreadyExists) {
-        notifs.push({
-          id: confirmId,
-          type: 'success',
-          title: 'Registration Confirmed ✅',
-          message: `You joined "${reg.eventTitle}"`,
-          time: new Date(reg.registeredAt),
-          read: false
-        });
-      }
-
-      if (reg.eventStartTime) {
-        const start = new Date(reg.eventStartTime);
-        const diffHours = (start.getTime() - now.getTime()) / (1000 * 60 * 60);
-
-        if (diffHours > 0 && diffHours <= 24) {
-          notifs.push({
-            id: reg.id + '_reminder',
-            type: 'reminder',
-            title: '⏰ Event Tomorrow!',
-            message: `"${reg.eventTitle}" starts tomorrow!`,
-            time: new Date(),
-            read: false
-          });
-        }
-
-        if (diffHours > 0 && diffHours <= 1) {
-          notifs.push({
-            id: reg.id + '_soon',
-            type: 'alert',
-            title: '🚨 Starting Soon!',
-            message: `"${reg.eventTitle}" starts in less than 1 hour!`,
-            time: new Date(),
-            read: false
-          });
-        }
-      }
-    });
-
-    // merge with existing new-event notifications
-    const newEventNotifs = this.notifications.filter(n => n.type === 'new');
-    const merged = [...notifs, ...newEventNotifs].sort((a, b) =>
-      new Date(b.time).getTime() - new Date(a.time).getTime()
-    );
-    this.notifications = merged;
   }
 
   isJoined(eventId: string): boolean {
@@ -205,17 +180,16 @@ applySearch() {
       return;
     }
 
-    // double check — prevent duplicate registration
+    if (!eventItem || !eventItem.id) return;
     if (this.isJoined(eventItem.id)) return;
 
-    // immediately update local state to prevent double click
     this.joinedEventIds = [...this.joinedEventIds, eventItem.id];
 
     try {
       await addDoc(collection(this.firestore, 'registrations'), {
         eventId: eventItem.id,
-        eventTitle: eventItem.title,
-        eventStartTime: eventItem.startTime || '',
+        eventTitle: eventItem.title || '',
+        eventStartTime: eventItem.startTime || eventItem.time || '',
         eventDate: eventItem.date || '',
         eventLocation: eventItem.location || '',
         userId: user.uid,
@@ -223,35 +197,88 @@ applySearch() {
         registeredAt: new Date().toISOString()
       });
 
-      // add notification only once
-      const alreadyNotified = this.notifications
-        .find(n => n.id === eventItem.id + '_joined');
+      // Write permanent confirmation log entry to increments bell badges
+      await addDoc(collection(this.firestore, 'notifications'), {
+        userId: user.uid,
+        eventId: eventItem.id,
+        category: 'Registration',
+        title: 'Registration Confirmed ✅',
+        message: `You successfully joined "${eventItem.title}"`,
+        isUrgent: false,
+        read: false,
+        createdAt: new Date().toISOString()
+      });
 
-      if (!alreadyNotified) {
-        this.notifications.unshift({
-          id: eventItem.id + '_joined',
-          type: 'success',
-          title: 'Registration Confirmed ✅',
-          message: `You joined "${eventItem.title}"`,
-          time: new Date(),
-          read: false
-        });
-      }
+      alert(`Successfully joined "${eventItem.title}"! ✅ Check your notification feed.`);
 
-      alert(`Successfully joined "${eventItem.title}"! ✅`);
     } catch (error: any) {
-      // revert local state if save failed
       this.joinedEventIds = this.joinedEventIds.filter(id => id !== eventItem.id);
-      alert('Error: ' + error.message);
+      alert('Registration failed: ' + error.message);
+    }
+  }
+
+  async unjoinEvent(eventItem: any) {
+    const user = this.auth.currentUser;
+    if (!user || !eventItem || !eventItem.id) return;
+
+    const matchingReg = this.userRegistrations.find(r => r && r['eventId'] === eventItem.id);
+    
+    if (!matchingReg || !matchingReg.id) {
+      console.warn("Could not find a local registration document ID matching event:", eventItem.id);
+      return;
+    }
+
+    if (confirm(`Are you sure you want to leave "${eventItem.title || 'this event'}"?`)) {
+      try {
+        const regDocRef = doc(this.firestore, `registrations/${matchingReg.id}`);
+        await deleteDoc(regDocRef);
+        
+        this.joinedEventIds = this.joinedEventIds.filter(id => id !== eventItem.id);
+        this.userRegistrations = this.userRegistrations.filter(r => r.id !== matchingReg.id);
+
+        // Write permanent cancellation log entry to force bell count upward!
+        await addDoc(collection(this.firestore, 'notifications'), {
+          userId: user.uid,
+          eventId: eventItem.id,
+          category: 'Cancellation',
+          title: 'Event Left ❌',
+          message: `You removed yourself from "${eventItem.title}"`,
+          isUrgent: false,
+          read: false,
+          createdAt: new Date().toISOString()
+        });
+
+        alert(`You have successfully removed yourself from "${eventItem.title}".`);
+
+      } catch (error: any) {
+        console.error("Error executing delete operations on Firestore:", error);
+        alert('Could not cancel registration: ' + error.message);
+      }
     }
   }
 
   openNotifications() {
-    this.showNotifications = !this.showNotifications;
+    this.router.navigate(['/home/alert']);
+  }
+
+  async clearAllAlerts() {
+    const user = this.auth.currentUser;
+    if (user) {
+      try {
+        const userDocRef = doc(this.firestore, `users/${user.uid}`);
+        await updateDoc(userDocRef, {
+          notificationsClearedAt: serverTimestamp()
+        });
+        this.notifications = [];
+        this.showNotifications = false;
+      } catch (err) {
+        console.error("Could not write global wipe action to Firestore:", err);
+      }
+    }
   }
 
   markRead(notif: any) {
-    notif.read = true;
+    if (notif) notif.read = true;
   }
 
   markAllRead() {

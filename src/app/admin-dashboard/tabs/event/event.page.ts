@@ -32,6 +32,7 @@ export class EventPage implements OnInit {
   registrations: any[] = [];
   openRosterId: string | null = null;
   userProfiles: { [uid: string]: string } = {};
+  existingUserIds: Set<string> = new Set(); // Track actual active users
 
   constructor() {
     addIcons({
@@ -41,7 +42,7 @@ export class EventPage implements OnInit {
   }
 
   ngOnInit() {
-    // load events
+    // 1. Load events
     const eventsCol = collection(this.firestore, 'events');
     collectionData(eventsCol, { idField: 'id' }).subscribe((data: any[]) => {
       const now = new Date();
@@ -54,26 +55,31 @@ export class EventPage implements OnInit {
       });
     });
 
-    // load registrations + fetch each user's profile image
+    // 2. Load registrations and cross-verify with real live user data records
     const regsCol = collection(this.firestore, 'registrations');
     collectionData(regsCol, { idField: 'id' }).subscribe(async (data: any[]) => {
-      this.registrations = data;
-
-      // fetch profile images for all unique users
+      const validRegistrations: any[] = [];
       const uniqueUserIds = [...new Set(data.map(r => r.userId).filter(Boolean))];
+
+      // Fetch profiles and verify user existence
       for (const uid of uniqueUserIds) {
-        if (!this.userProfiles[uid]) {
-          try {
-            const userDoc = await getDoc(doc(this.firestore, 'users', uid));
-            if (userDoc.exists()) {
-              const userData = userDoc.data();
-              this.userProfiles[uid] = userData['profileImage'] || '';
-            }
-          } catch (e) {
-            this.userProfiles[uid] = '';
+        try {
+          const userDoc = await getDoc(doc(this.firestore, 'users', uid));
+          if (userDoc.exists()) {
+            this.existingUserIds.add(uid);
+            const userData = userDoc.data();
+            this.userProfiles[uid] = userData['profileImage'] || '';
+          } else {
+            // User account deleted or no longer in system
+            this.existingUserIds.delete(uid);
           }
+        } catch (e) {
+          console.error(`Error validating user ${uid}:`, e);
         }
       }
+
+      // Filter: Only allow registrations where the user doc actually exists in the DB
+      this.registrations = data.filter(r => r && r.userId && this.existingUserIds.has(r.userId));
     });
   }
 

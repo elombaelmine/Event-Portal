@@ -1,134 +1,96 @@
-<ion-header>
-  <ion-toolbar style="--background: #0D3E2D; --color: white;">
-    <ion-title style="font-weight: 700;">➕ {{ editingId ? 'Edit' : 'Create' }} Event</ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>{{ editingId ? 'Edit' : 'Create' }} Event</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content style="--background: #F4EFE2;">
-  <div style="padding: 16px;">
-
-    <!-- Progress -->
-    <div style="display: flex; justify-content: space-between;
-                align-items: center; margin-bottom: 8px;">
-      <h3 style="margin: 0; font-weight: 700; color: #111; font-size: 16px;">
-        {{ editingId ? 'Edit Event' : 'Create New Event' }}
-      </h3>
-    </div>
-    <div style="background: #F4EFE2; border-radius: 4px; height: 6px; margin-bottom: 20px;">
-      <div style="background: #C8A24C; width: 66%; height: 100%; border-radius: 4px;"></div>
-    </div>
-
-    <!-- Image Upload -->
-    <div (click)="imageInput.click()"
-      style="background: #F4EFE2; border-radius: 18px; height: 160px;
-             display: flex; flex-direction: column; align-items: center;
-             justify-content: center; margin-bottom: 20px; position: relative;
-             overflow: hidden; cursor: pointer;">
-      <img *ngIf="form.imageUrl" [src]="form.imageUrl"
-        style="position: absolute; width: 100%; height: 100%; object-fit: cover;"/>
-      <div style="z-index: 1; text-align: center; padding: 16px; border-radius: 10px;"
-        [style.background]="form.imageUrl ? 'rgba(0,0,0,0.4)' : 'transparent'">
-        <ion-icon name="camera-outline" style="font-size: 32px; color: white;"></ion-icon>
-        <p style="margin: 6px 0 0; color: white; font-size: 12px; font-weight: 600;">
-          UPLOAD COVER IMAGE
-        </p>
+<ion-content>
+  <div class="page-shell create-layout">
+    <section class="create-intro">
+      <p class="eyebrow">Admin workflow</p>
+      <h1>{{ editingId ? 'Edit Event' : 'Create New Event' }}</h1>
+      <p>Publish clear event details with a cover image, schedule, location, and description.</p>
+      <div class="progress-track">
+        <span></span>
       </div>
-      <input type="file" accept="image/*"
-        (change)="onImageSelected($event)"
-        style="display: none;" #imageInput/>
-    </div>
+    </section>
 
-    <!-- Title -->
-    <p style="margin: 0 0 6px; font-size: 13px; color: #555; font-weight: 600;">Event Title</p>
-    <div style="background: white; border-radius: 18px; padding: 2px 12px;
-                border: 1px solid rgba(13, 62, 45, 0.08); margin-bottom: 14px;">
-      <ion-input [(ngModel)]="form.title"
-        placeholder="e.g., Annual Tech Symposium"
-        style="--color: #333; --placeholder-color: #bbb;">
-      </ion-input>
-    </div>
+    <form class="event-form surface">
+      <button class="image-upload" type="button" (click)="imageInput.click()">
+        <img *ngIf="form.imageUrl" [src]="form.imageUrl" alt="Selected event cover"/>
+        <span [class.has-image]="form.imageUrl">
+          <ion-icon name="camera-outline"></ion-icon>
+          Upload cover image
+        </span>
+      </button>
+      <input type="file" accept="image/*" (change)="onImageSelected($event)" hidden #imageInput/>
 
-    <!-- Category -->
-    <p style="margin: 0 0 8px; font-size: 13px; color: #555; font-weight: 600;">Category</p>
-    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;">
-      <div *ngFor="let cat of categories"
-        (click)="form.category = cat"
-        [style.background]="form.category === cat ? '#0D3E2D' : 'white'"
-        [style.color]="form.category === cat ? 'white' : '#555'"
-        style="padding: 6px 16px; border-radius: 20px; font-size: 13px;
-               font-weight: 600; cursor: pointer; border: 1px solid rgba(13, 62, 45, 0.12);">
-        {{ cat }}
+      <div class="field">
+        <label>Event Title</label>
+        <ion-input [(ngModel)]="form.title" name="title" placeholder="e.g., Annual Tech Symposium"></ion-input>
       </div>
-    </div>
 
-    <!-- Date -->
-    <p style="margin: 0 0 6px; font-size: 13px; color: #555; font-weight: 600;">Date</p>
-    <div style="background: white; border-radius: 18px; padding: 2px 12px;
-                border: 1px solid rgba(13, 62, 45, 0.08); margin-bottom: 14px;
-                display: flex; align-items: center;">
-      <ion-icon name="calendar-outline" style="color: #0D3E2D; font-size: 18px;"></ion-icon>
-      <ion-input type="date" [(ngModel)]="form.date"
-        style="--color: #333; font-size: 14px;">
-      </ion-input>
-    </div>
+      <div class="field">
+        <label>Category</label>
+        <div class="category-list">
+          <button *ngFor="let cat of categories" type="button"
+            (click)="form.category = cat"
+            [class.selected]="form.category === cat">
+            {{ cat }}
+          </button>
+        </div>
+      </div>
 
-    <!-- Time -->
-    <p style="margin: 0 0 6px; font-size: 13px; color: #555; font-weight: 600;">Time</p>
-    <div style="background: white; border-radius: 18px; padding: 2px 12px;
-                border: 1px solid rgba(13, 62, 45, 0.08); margin-bottom: 14px;
-                display: flex; align-items: center;">
-      <ion-icon name="time-outline" style="color: #0D3E2D; font-size: 18px;"></ion-icon>
-      <ion-input type="time" [(ngModel)]="form.time"
-        style="--color: #333; font-size: 14px;">
-      </ion-input>
-    </div>
+      <div class="field-grid">
+        <div class="field icon-field">
+          <label>Date</label>
+          <div>
+            <ion-icon name="calendar-outline"></ion-icon>
+            <ion-input type="date" [(ngModel)]="form.date" name="date"></ion-input>
+          </div>
+        </div>
 
-    <!-- End Time -->
-    <p style="margin: 0 0 6px; font-size: 13px; color: #555; font-weight: 600;">End Time</p>
-    <div style="background: white; border-radius: 10px; padding: 2px 8px;
-                box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 14px;
-                display: flex; align-items: center;">
-      <ion-icon name="time-outline" style="color: #888; font-size: 18px;"></ion-icon>
-      <ion-input type="time" [(ngModel)]="form.endTime"
-        style="--color: #333; font-size: 14px;">
-      </ion-input>
-    </div>
+        <div class="field icon-field">
+          <label>Time</label>
+          <div>
+            <ion-icon name="time-outline"></ion-icon>
+            <ion-input type="time" [(ngModel)]="form.time" name="time"></ion-input>
+          </div>
+        </div>
 
-    <!-- Location -->
-    <p style="margin: 0 0 6px; font-size: 13px; color: #555; font-weight: 600;">Location</p>
-    <div style="background: white; border-radius: 18px; padding: 2px 12px;
-                border: 1px solid rgba(13, 62, 45, 0.08); margin-bottom: 14px;
-                display: flex; align-items: center;">
-      <ion-icon name="location-outline" style="color: #0D3E2D; font-size: 18px;"></ion-icon>
-      <ion-input [(ngModel)]="form.location"
-        placeholder="e.g., Campus Quad or Engineering Hall"
-        style="--color: #333; --placeholder-color: #bbb;">
-      </ion-input>
-    </div>
+        <div class="field icon-field">
+          <label>End Time</label>
+          <div>
+            <ion-icon name="time-outline"></ion-icon>
+            <ion-input type="time" [(ngModel)]="form.endTime" name="endTime"></ion-input>
+          </div>
+        </div>
+      </div>
 
-    <!-- Description -->
-    <p style="margin: 0 0 6px; font-size: 13px; color: #555; font-weight: 600;">Description</p>
-    <div style="background: white; border-radius: 10px; padding: 4px 8px;
-                box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 24px;">
-      <ion-textarea [(ngModel)]="form.description" rows="4"
-        placeholder="Describe the event goals, activities, and who should attend..."
-        style="--color: #333; --placeholder-color: #bbb;">
-      </ion-textarea>
-    </div>
+      <div class="field icon-field">
+        <label>Location</label>
+        <div>
+          <ion-icon name="location-outline"></ion-icon>
+          <ion-input [(ngModel)]="form.location" name="location" placeholder="e.g., Campus Quad or Engineering Hall"></ion-input>
+        </div>
+      </div>
 
-    <!-- Publish -->
-    <ion-button expand="block" (click)="saveEvent(false)"
-      style="--background: #0D3E2D; --border-radius: 30px;
-             --color: white; font-weight: 700; height: 52px; margin-bottom: 12px;">
-      {{ editingId ? 'Update Event' : 'Publish Event' }}
-    </ion-button>
+      <div class="field">
+        <label>Description</label>
+        <ion-textarea [(ngModel)]="form.description" name="description" rows="5"
+          placeholder="Describe the event goals, activities, and who should attend...">
+        </ion-textarea>
+      </div>
 
-    <!-- Draft -->
-    <ion-button expand="block" fill="outline" (click)="saveEvent(true)"
-      style="--border-color: #0D3E2D; --color: #0D3E2D; --border-radius: 30px;
-             font-weight: 600; height: 48px; margin-bottom: 20px;">
-      Save as Draft
-    </ion-button>
+      <div class="form-actions">
+        <ion-button expand="block" (click)="saveEvent(false)">
+          {{ editingId ? 'Update Event' : 'Publish Event' }}
+        </ion-button>
 
+        <ion-button expand="block" fill="outline" (click)="saveEvent(true)">
+          Save as Draft
+        </ion-button>
+      </div>
+    </form>
   </div>
 </ion-content>

@@ -1,146 +1,83 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar style="--background: #004d40; --color: white;">
-    <ion-title style="font-weight: 700;">My Profile</ion-title>
+  <ion-toolbar>
+    <ion-title>My Profile</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content style="--background: #f8f9fa;">
-  <div style="max-width: 600px; margin: 0 auto; padding: 24px 16px;">
-
-    <!-- Avatar -->
-    <div style="text-align: center; margin-bottom: 24px;">
-      <div style="position: relative; display: inline-block;">
-        <div style="width: 100px; height: 100px; border-radius: 50%;
-                    border: 3px solid #004d40; overflow: hidden;
-                    background: #e8f4f5; display: flex; align-items: center;
-                    justify-content: center; margin: 0 auto;">
-          <img *ngIf="profileImage" [src]="profileImage"
-            style="width: 100%; height: 100%; object-fit: cover;"/>
-          <ion-icon *ngIf="!profileImage" name="person-outline"
-            style="font-size: 48px; color: #004d40;"></ion-icon>
+<ion-content>
+  <div class="page-shell profile-layout">
+    <section class="profile-summary surface">
+      <div class="avatar-wrap">
+        <div class="avatar">
+          <img *ngIf="profileImage" [src]="profileImage" alt="Profile image"/>
+          <ion-icon *ngIf="!profileImage" name="person-outline"></ion-icon>
         </div>
-        <div (click)="photoInput.click()"
-          style="position: absolute; bottom: 0; right: 0;
-                 background: #004d40; border-radius: 50%;
-                 width: 30px; height: 30px; display: flex;
-                 align-items: center; justify-content: center;
-                 cursor: pointer; border: 2px solid white;">
-          <ion-icon name="camera-outline"
-            style="color: white; font-size: 16px;"></ion-icon>
-        </div>
-        <input type="file" accept="image/*"
-          (change)="onPhotoSelected($event)"
-          style="display: none;" #photoInput/>
+        <button type="button" (click)="photoInput.click()" aria-label="Change profile photo">
+          <ion-icon name="camera-outline"></ion-icon>
+        </button>
+        <input type="file" accept="image/*" (change)="onPhotoSelected($event)" hidden #photoInput/>
       </div>
 
-      <h2 style="margin: 12px 0 2px; font-weight: 700; color: #004d40; font-size: 22px;">
-        {{ userData.fullName || 'User' }}
-      </h2>
-      <div style="display: inline-flex; align-items: center; gap: 6px;
-                  background: #e8f4f5; border-radius: 20px; padding: 4px 12px;">
-        <ion-icon name="shield-checkmark-outline"
-          style="color: #2d9e6b; font-size: 14px;"></ion-icon>
-        <span style="font-size: 12px; color: #004d40; font-weight: 600;">
-          {{ userData.isVerified ? 'Verified Member' : 'Pending Verification' }}
-        </span>
-      </div>
-    </div>
+      <h1>{{ userData.fullName || 'User' }}</h1>
+      <span class="status-pill">
+        <ion-icon name="shield-checkmark-outline"></ion-icon>
+        {{ userData.isVerified ? 'Verified Member' : 'Pending Verification' }}
+      </span>
+    </section>
 
-    <!-- Personal Info Card -->
-    <div style="background: white; border-radius: 16px; padding: 16px;
-                margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-      <h4 style="color: #004d40; font-weight: 700; margin: 0 0 16px; font-size: 15px;">
-        Personal Information
-      </h4>
+    <section class="info-stack">
+      <div class="info-card surface">
+        <h2>Personal Information</h2>
 
-      <!-- Full Name -->
-      <div style="border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; margin-bottom: 12px;">
-        <p style="margin: 0 0 4px; font-size: 11px; color: #999; text-transform: uppercase;
-                  letter-spacing: 0.5px;">Full Name</p>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <ion-input *ngIf="editing === 'fullName'"
-            [(ngModel)]="userData.fullName"
-            (ionBlur)="stopEdit()"
-            style="--color: #333; font-size: 15px; font-weight: 500; padding: 0; flex: 1;">
-          </ion-input>
-          <p *ngIf="editing !== 'fullName'"
-            style="margin: 0; font-size: 15px; color: #222; font-weight: 500;">
-            {{ userData.fullName || '—' }}
-          </p>
-          <ion-icon name="pencil-outline" (click)="startEdit('fullName')"
-            style="color: #aaa; font-size: 18px; cursor: pointer; margin-left: 8px;">
-          </ion-icon>
+        <div class="info-row">
+          <label>Full Name</label>
+          <div>
+            <ion-input *ngIf="editing === 'fullName'" [(ngModel)]="userData.fullName" (ionBlur)="stopEdit()"></ion-input>
+            <p *ngIf="editing !== 'fullName'">{{ userData.fullName || '-' }}</p>
+            <ion-icon [name]="editing === 'fullName' ? 'shield-checkmark-outline' : 'pencil-outline'" (click)="editing === 'fullName' ? stopEdit() : startEdit('fullName')"></ion-icon>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <label>Email Address</label>
+          <div>
+            <p>{{ userData.email || '-' }}</p>
+            <ion-icon name="lock-closed-outline" class="muted"></ion-icon>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <label>Phone Number</label>
+          <div>
+            <ion-input *ngIf="editing === 'phoneNumber'" [(ngModel)]="userData.phoneNumber" (ionBlur)="stopEdit()" type="tel"></ion-input>
+            <p *ngIf="editing !== 'phoneNumber'">{{ userData.phoneNumber || '-' }}</p>
+            <ion-icon [name]="editing === 'phoneNumber' ? 'shield-checkmark-outline' : 'pencil-outline'" (click)="editing === 'phoneNumber' ? stopEdit() : startEdit('phoneNumber')"></ion-icon>
+          </div>
         </div>
       </div>
 
-      <!-- Email -->
-      <div style="border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; margin-bottom: 12px;">
-        <p style="margin: 0 0 4px; font-size: 11px; color: #999; text-transform: uppercase;
-                  letter-spacing: 0.5px;">Email Address</p>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <p style="margin: 0; font-size: 15px; color: #222; font-weight: 500;">
-            {{ userData.email || '—' }}
-          </p>
-          <ion-icon name="pencil-outline"
-            style="color: #ddd; font-size: 18px; margin-left: 8px;">
-          </ion-icon>
+      <div class="info-card stats-card surface">
+      <h2>Account Info</h2>
+      <div class="stats-grid">
+        <div>
+          <label>Member Since</label>
+          <p>{{ userData.createdAt?.toDate() | date:'MMMM d, yyyy' }}</p>
         </div>
-      </div>
-
-      <!-- Phone -->
-      <div>
-        <p style="margin: 0 0 4px; font-size: 11px; color: #999; text-transform: uppercase;
-                  letter-spacing: 0.5px;">Phone Number</p>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <ion-input *ngIf="editing === 'phoneNumber'"
-            [(ngModel)]="userData.phoneNumber"
-            (ionBlur)="stopEdit()"
-            type="tel"
-            style="--color: #333; font-size: 15px; font-weight: 500; padding: 0; flex: 1;">
-          </ion-input>
-          <p *ngIf="editing !== 'phoneNumber'"
-            style="margin: 0; font-size: 15px; color: #222; font-weight: 500;">
-            {{ userData.phoneNumber || '—' }}
-          </p>
-          <ion-icon name="pencil-outline" (click)="startEdit('phoneNumber')"
-            style="color: #aaa; font-size: 18px; cursor: pointer; margin-left: 8px;">
-          </ion-icon>
+        <div>
+          <label>Events Joined</label>
+          <strong>{{ totalJoined }}</strong>
+        </div>
+        <div>
+          <label>Events Not Joined</label>
+          <strong style="color: #e63946;">{{ totalUnjoined }}</strong>
         </div>
       </div>
     </div>
 
-    <!-- Account Info Card -->
-    <div style="background: white; border-radius: 16px; padding: 16px;
-                margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-      <h4 style="color: #004d40; font-weight: 700; margin: 0 0 16px; font-size: 15px;">
-        Account Info
-      </h4>
-
-      <div style="border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; margin-bottom: 12px;">
-        <p style="margin: 0 0 4px; font-size: 11px; color: #999; text-transform: uppercase;
-                  letter-spacing: 0.5px;">Member Since</p>
-        <p style="margin: 0; font-size: 15px; color: #222; font-weight: 500;">
-          {{ userData.createdAt?.toDate() | date:'MMMM d, yyyy' }}
-        </p>
-      </div>
-
-      <div>
-        <p style="margin: 0 0 4px; font-size: 11px; color: #999; text-transform: uppercase;
-                  letter-spacing: 0.5px;">Events Joined</p>
-        <p style="margin: 0; font-size: 22px; font-weight: 800; color: #004d40;">
-          {{ totalJoined }}
-        </p>
-      </div>
-    </div>
-
-    <!-- Logout -->
-    <ion-button expand="block" (click)="logout()"
-      style="--background: white; --border-radius: 12px; --color: #e63946;
-             font-weight: 700; height: 50px;
-             --box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-top: 8px;">
-      <ion-icon name="log-out-outline" slot="start"></ion-icon>
-      Logout
-    </ion-button>
-
+      <ion-button expand="block" class="logout-button" (click)="logout()">
+        <ion-icon name="log-out-outline" slot="start"></ion-icon>
+        Logout
+      </ion-button>
+    </section>
   </div>
 </ion-content>

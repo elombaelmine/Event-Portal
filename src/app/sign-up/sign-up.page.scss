@@ -1,12 +1,14 @@
 .auth-screen {
-  --background: #F4EFE2;
+  --background: linear-gradient(145deg, #f7f4ec 0%, #edf3ec 100%);
 
   .auth-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     min-height: 100%;
-    padding: 24px;
+    width: min(100%, 500px);
+    margin: 0 auto;
+    padding: clamp(20px, 5vw, 36px);
     gap: 18px;
   }
 
@@ -16,7 +18,7 @@
     h2 {
       color: #0D3E2D;
       font-weight: 800;
-      font-size: 2.2rem;
+      font-size: clamp(1.8rem, 7vw, 2.4rem);
       margin-bottom: 5px;
     }
     p {
@@ -33,6 +35,7 @@
     box-shadow: 0 12px 26px rgba(13, 62, 45, 0.06);
     --padding-start: 16px;
     --highlight-color: #C8A24C;
+    --color: #0D3E2D; 
 
     ion-icon {
       color: #C8A24C;
@@ -40,17 +43,32 @@
       font-size: 20px;
     }
 
-    // CHANGE THIS FROM ion-select TO ion-input
     ion-input {
       width: 100%;
-      --color: #13224D; /* Explicitly sets the text input color */
+      --color: #0D3E2D; 
+      --placeholder-color: #5B6C5C;
+      --placeholder-opacity: 0.7;
+    }
+
+    // ADDED: Seamless icon-only styling for the toggle button
+    .visibility-toggle-btn {
+      --padding-end: 8px;
+      --padding-start: 0;
+      margin: 0;
+      height: 100%;
+      
+      ion-icon {
+        font-size: 20px;
+        color: #5B6C5C !important;
+        margin-right: 0; // Prevent pushing layout boundaries
+      }
     }
   }
 
   .auth-btn {
     --background: #0D3E2D;
     --color: #ffffff;
-    --border-radius: 18px;
+    --border-radius: 8px;
     height: 56px;
     margin-top: 25px;
     font-weight: 700;
@@ -81,6 +99,7 @@ ion-header {
 
 ion-toolbar {
   --background: #ffffff;
+  --color: #0D3E2D;
   --border-width: 0;
   padding-top: 8px;
   padding-bottom: 8px;
@@ -97,4 +116,10 @@ ion-title {
 
 ion-back-button {
   --color: #C8A24C;
+}
+
+@media (min-width: 768px) {
+  .auth-screen .auth-container {
+    min-height: calc(100% - 32px);
+  }
 }

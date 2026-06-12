@@ -1,13 +1,68 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Alert</ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar style="--background: #0D3E2D; --color: #ffffff;">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home/view-events" text="" mode="md" style="--color: #ffffff;"></ion-back-button>
+    </ion-buttons>
+    <ion-title style="font-weight: 700; letter-spacing: 0.5px; color: #ffffff;">Campus Notifications</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Alert</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="ion-padding" style="--background: #fafafa;">
+  
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin: 10px 5px 25px 5px;">
+    <div>
+      <h2 style="font-weight: 800; color: #111; margin: 0 0 4px 0; font-size: 1.6rem;">Alerts Feed</h2>
+      <p style="color: #666; margin: 0; font-size: 0.9rem;">Real-time campus communications ledger.</p>
+    </div>
+    
+    @if (alerts.length > 0) {
+      <button (click)="clearAllAlerts()" 
+              style="background: none; border: none; color: #0D3E2D; font-weight: 700; font-size: 0.9rem; cursor: pointer; padding: 5px 0; display: inline-flex; align-items: center; gap: 4px;">
+        <ion-icon name="trash-outline"></ion-icon>
+        Clear all
+      </button>
+    }
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 16px;">
+    
+    @for (alert of alerts; track alert.id) {
+      <div [style.border-left]="alert.isUrgent ? '4px solid #0D3E2D' : '4px solid #111111'"
+           style="background: #ffffff; padding: 16px; border-radius: 0 8px 8px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border-top: 1px solid #eaeaea; border-right: 1px solid #eaeaea; border-bottom: 1px solid #eaeaea;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span [style.color]="alert.isUrgent ? '#0D3E2D' : '#111111'" 
+                style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
+            {{ alert.category }}
+          </span>
+          <span style="color: #999; font-size: 0.75rem;">
+            {{ alert.time | date:'shortTime' }}
+          </span>
+        </div>
+
+        <h3 style="margin: 0 0 6px 0; font-size: 1.05rem; font-weight: 700; color: #111;">
+          {{ alert.title }}
+        </h3>
+        <p style="margin: 0; color: #444; font-size: 0.9rem; line-height: 1.4;">
+          {{ alert.message }}
+        </p>
+
+        @if (alert.isUrgent) {
+          <div style="display: inline-flex; align-items: center; margin-top: 12px; font-size: 0.8rem; font-weight: 700; color: #0D3E2D;">
+            <span style="width: 6px; height: 6px; background-color: #0D3E2D; border-radius: 50%; margin-right: 6px; display: inline-block;"></span>
+            Critical Notification
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+
+  @if (alerts.length === 0) {
+    <div style="text-align: center; padding: 80px 20px; color: #999; display: flex; flex-direction: column; align-items: center; gap: 12px;">
+      <ion-icon name="notifications-outline" style="font-size: 3rem; color: #ccc;"></ion-icon>
+      <p style="margin: 0; font-size: 0.95rem; font-weight: 500;">No active notifications at this time.</p>
+    </div>
+  }
+
 </ion-content>

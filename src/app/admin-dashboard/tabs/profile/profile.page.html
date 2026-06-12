@@ -1,101 +1,68 @@
-<ion-header>
-  <ion-toolbar style="--background: #13224D; --color: white;">
-    <ion-title style="font-weight: 700;">👤 Profile</ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Profile</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content style="--background: #FCF3F6;">
-  <div style="padding: 30px 16px 16px;">
-
-    <div style="text-align: center; margin-bottom: 20px;">
-      <div style="position: relative; display: inline-block;">
-        <div style="width: 100px; height: 100px; border-radius: 50%;
-                    border: 3px solid #13224D; overflow: hidden;
-                    background: white; display: flex; align-items: center;
-                    justify-content: center;">
-          <img *ngIf="profileImage" [src]="profileImage"
-            style="width: 100%; height: 100%; object-fit: cover;"/>
-          <ion-icon *ngIf="!profileImage" name="person-outline"
-            style="font-size: 48px; color: #13224D;"></ion-icon>
+<ion-content>
+  <div class="page-shell profile-layout">
+    <section class="profile-summary surface">
+      <div class="avatar-wrap">
+        <div class="avatar">
+          <img *ngIf="profileImage" [src]="profileImage" alt="Profile image"/>
+          <ion-icon *ngIf="!profileImage" name="person-outline"></ion-icon>
         </div>
-        <div (click)="photoInput.click()"
-          style="position: absolute; bottom: 0; right: 0;
-                 background: #13224D; border-radius: 50%; width: 30px;
-                 height: 30px; display: flex; align-items: center;
-                 justify-content: center; cursor: pointer; border: 2px solid white;">
-          <ion-icon name="camera-outline" style="color: white; font-size: 16px;"></ion-icon>
-        </div>
-        <input type="file" accept="image/*"
-          (change)="onPhotoSelected($event)"
-          style="display: none;" #photoInput/>
+        <button type="button" (click)="photoInput.click()" aria-label="Change profile photo">
+          <ion-icon name="camera-outline"></ion-icon>
+        </button>
+        <input type="file" accept="image/*" (change)="onPhotoSelected($event)" hidden #photoInput/>
       </div>
-      <h2 style="margin: 12px 0 2px; font-weight: 700; color: #111; font-size: 20px;">
-        {{ profile.fullName || 'Admin' }}
-      </h2>
-      <p style="margin: 0; font-size: 12px; color: #888; font-weight: 600;
-                text-transform: uppercase; letter-spacing: 1px;">
-        ADMIN ID: #{{ adminId }}
-      </p>
-    </div>
 
-    <div style="background: white; border-radius: 16px; padding: 16px;
-                margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-      <h4 style="color: #13224D; font-weight: 700; margin: 0 0 14px; font-size: 15px;">
-        Personal Information
-      </h4>
+      <h1>{{ profile.fullName || 'Admin' }}</h1>
+      <span class="admin-id">Admin ID: #{{ adminId }}</span>
+    </section>
 
-      <div *ngFor="let field of profileFields"
-        style="border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; margin-bottom: 12px;">
-        <p style="margin: 0 0 4px; font-size: 12px; color: #999;">{{ field.label }}</p>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          
-          <ion-input *ngIf="editing === field.key"
-            [(ngModel)]="profile[field.key]"
-            (ionBlur)="stopEdit()"
-            style="--color: #333; font-size: 15px; font-weight: 500; padding: 0; flex: 1;">
-          </ion-input>
-          
-          <p *ngIf="editing !== field.key"
-            style="margin: 0; font-size: 15px; color: #222; font-weight: 500;">
-            {{ profile[field.key] || '—' }}
-          </p>
-          
-          <ion-icon *ngIf="field.key !== 'email'"
-            name="pencil-outline" (click)="startEdit(field.key)"
-            style="color: #aaa; font-size: 18px; cursor: pointer; margin-left: 8px;">
-          </ion-icon>
+    <section class="info-stack">
+      <div class="info-card surface">
+        <h2>Personal Information</h2>
+
+        <div *ngFor="let field of profileFields" class="info-row">
+          <label>{{ field.label }}</label>
+          <div>
+            <ion-input *ngIf="editing === field.key"
+              [(ngModel)]="profile[field.key]"
+              (ionBlur)="stopEdit()">
+            </ion-input>
+
+            <p *ngIf="editing !== field.key">{{ profile[field.key] || '-' }}</p>
+
+            <ion-icon *ngIf="field.key !== 'email'"
+              name="pencil-outline"
+              (click)="startEdit(field.key)">
+            </ion-icon>
+            <ion-icon *ngIf="field.key === 'email'" name="lock-closed-outline" class="muted"></ion-icon>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div style="background: white; border-radius: 16px; padding: 16px;
-                margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-      <h4 style="color: #13224D; font-weight: 700; margin: 0 0 14px; font-size: 15px;">
-        Dashboard Stats
-      </h4>
-      <div style="display: flex; justify-content: space-around;">
-        <div style="text-align: center;">
-          <p style="margin: 0; font-size: 28px; font-weight: 800; color: #004d40;">
-            {{ totalEvents }}
-          </p>
-          <p style="margin: 0; font-size: 12px; color: #888;">Events</p>
-        </div>
-        <div style="text-align: center;">
-          <p style="margin: 0; font-size: 28px; font-weight: 800; color: #0D3E2D;">
-            {{ totalRegistrations }}
-          </p>
-          <p style="margin: 0; font-size: 12px; color: #888;">Registrations</p>
+      <div class="info-card stats-card surface">
+        <h2>Dashboard Stats</h2>
+        <div class="stats-grid">
+          <div>
+            <strong>{{ totalEvents }}</strong>
+            <label>Events</label>
+          </div>
+          <div>
+            <strong>{{ totalRegistrations }}</strong>
+            <label>Registrations</label>
+          </div>
         </div>
       </div>
-    </div>
 
-    <ion-button expand="block" (click)="logout()"
-      style="--background: white; --border-radius: 12px; --color: #0D3E2D;
-             font-weight: 700; height: 50px;
-             --box-shadow: 0 10px 30px rgba(19, 34, 77, 0.08);">
-      <ion-icon name="log-out-outline" slot="start"></ion-icon>
-      Logout
-    </ion-button>
-
+      <ion-button expand="block" class="logout-button" (click)="logout()">
+        <ion-icon name="log-out-outline" slot="start"></ion-icon>
+        Logout
+      </ion-button>
+    </section>
   </div>
 </ion-content>

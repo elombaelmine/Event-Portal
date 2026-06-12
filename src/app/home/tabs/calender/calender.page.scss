@@ -1,0 +1,195 @@
+.calendar-layout {
+  display: grid;
+  gap: 22px;
+}
+
+.calendar-card {
+  padding: clamp(14px, 3vw, 22px);
+}
+
+.calendar-head {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.calendar-head h2 {
+  margin: 0;
+  color: var(--app-ink);
+  font-size: clamp(1rem, 3vw, 1.35rem);
+  font-weight: 800;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.calendar-head ion-button {
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  --color: var(--app-ink);
+  --border-radius: 8px;
+}
+
+.weekdays,
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  text-align: center;
+}
+
+.weekdays {
+  margin-bottom: 12px;
+  color: #849489;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.calendar-grid {
+  gap: clamp(6px, 2vw, 14px) 4px;
+}
+
+.calendar-day {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: clamp(40px, 9vw, 58px);
+}
+
+.calendar-day span:first-child {
+  display: grid;
+  place-items: center;
+  width: clamp(32px, 8vw, 44px);
+  height: clamp(32px, 8vw, 44px);
+  border-radius: 999px;
+  color: #27382f;
+  font-weight: 700;
+}
+
+.calendar-day .today {
+  color: var(--app-ink);
+  background: #edf3ec;
+  border: 1px solid var(--app-ink);
+}
+
+.day-dots {
+  position: absolute;
+  bottom: 1px;
+  display: flex;
+  gap: 3px;
+}
+
+.registered-dot,
+.event-dot,
+.today-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+}
+
+.registered-dot {
+  background: var(--app-ink);
+}
+
+.event-dot {
+  background: var(--app-gold);
+}
+
+.today-dot {
+  background: #edf3ec;
+  border: 1px solid var(--app-ink);
+}
+
+.calendar-side h3 {
+  margin: 20px 0 14px;
+  color: var(--app-ink);
+  font-size: 1.08rem;
+  font-weight: 800;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  color: #4f6357;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.registered-list {
+  display: grid;
+  gap: 12px;
+}
+
+.registered-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px;
+  background: #ffffff;
+  border-left: 4px solid var(--app-ink);
+  border-radius: 8px;
+  box-shadow: 0 8px 22px rgba(13, 62, 45, 0.06);
+}
+
+.registered-card h4,
+.registered-card p {
+  margin: 0;
+}
+
+.registered-card h4 {
+  color: var(--app-ink);
+  font-size: 0.98rem;
+}
+
+.registered-card p {
+  margin-top: 5px;
+  color: #718074;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.registered-card > span {
+  flex: 0 0 auto;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: #edf3ec;
+  color: var(--app-ink);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.empty-state ion-icon {
+  font-size: 40px;
+  color: #8ca179;
+}
+
+@media (min-width: 920px) {
+  .calendar-layout {
+    grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+    align-items: start;
+  }
+
+  .calendar-side {
+    position: sticky;
+    top: 24px;
+  }
+}
+
+@media (max-width: 420px) {
+  .registered-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Auth, signOut } from '@angular/fire/auth';
-import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
-import { collection, collectionData } from '@angular/fire/firestore';
+import { Firestore, doc, getDoc, setDoc, collection, collectionData } from '@angular/fire/firestore';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent,
   IonButton, IonIcon, IonInput
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { personOutline, cameraOutline, pencilOutline, logOutOutline } from 'ionicons/icons';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -29,6 +29,9 @@ export class ProfilePage implements OnInit {
   private firestore = inject(Firestore);
   private router = inject(Router);
 
+  private eventsSub?: Subscription;
+  private regsSub?: Subscription;
+
   adminEmail = '';
   adminId = '';
   profileImage = '';
@@ -36,14 +39,12 @@ export class ProfilePage implements OnInit {
   totalEvents = 0;
   totalRegistrations = 0;
 
-  // Initialized fields matching your console properties exactly
   profile: any = {
     fullName: '', 
     phone: '', 
     email: ''
   };
 
-  // Maps to keys in your user document
   profileFields = [
     { key: 'fullName', label: 'Full Name' },
     { key: 'email', label: 'Email Address' },
@@ -60,11 +61,9 @@ export class ProfilePage implements OnInit {
       this.adminEmail = user.email || '';
       this.adminId = user.uid.slice(0, 6).toUpperCase();
 
-      // Fetch from your main users collection
       const profileDoc = await getDoc(doc(this.firestore, `users/${user.uid}`));
       if (profileDoc.exists()) {
         const data = profileDoc.data();
-        // Merge fetched data into our profile object structure
         this.profile = { 
           fullName: data['fullName'] || '',
           phone: data['phone'] || '',
@@ -74,14 +73,41 @@ export class ProfilePage implements OnInit {
       }
     }
 
-    // Dynamic subscription streams for card metrics
-    collectionData(collection(this.firestore, 'events')).subscribe((data: any[]) => {
+    // 1. Live stream of events
+    this.eventsSub = collectionData(collection(this.firestore, 'events')).subscribe((data: any[]) => {
       this.totalEvents = data.length;
     });
 
-    collectionData(collection(this.firestore, 'registrations')).subscribe((data: any[]) => {
-      this.totalRegistrations = data.length;
+    // 2. Live stream of registrations validated against active accounts
+    this.regsSub = collectionData(collection(this.firestore, 'registrations')).subscribe(async (data: any[]) => {
+      const uniqueUserIds = [...new Set(data.map(r => r.userId).filter(Boolean))];
+      const existingUserIds = new Set<string>();
+
+      // Cross-verify registration users against the real users collection
+      for (const uid of uniqueUserIds) {
+        try {
+          const userDoc = await getDoc(doc(this.firestore, 'users', uid));
+          if (userDoc.exists()) {
+            existingUserIds.add(uid);
+          }
+        } catch (e) {
+          console.error(`Error validating user account profile: ${uid}`, e);
+        }
+      }
+
+      // Only count registration documents where the user actually exists in the database
+      const validRegistrations = data.filter(r => r && r.userId && existingUserIds.has(r.userId));
+      this.totalRegistrations = validRegistrations.length;
     });
+  }
+
+  ngOnDestroy() {
+    this.unsubscribeStreams();
+  }
+
+  private unsubscribeStreams() {
+    if (this.eventsSub) this.eventsSub.unsubscribe();
+    if (this.regsSub) this.regsSub.unsubscribe();
   }
 
   startEdit(field: string) { 
@@ -96,7 +122,6 @@ export class ProfilePage implements OnInit {
   async saveProfile() {
     const user = this.auth.currentUser;
     if (user) {
-      // Updates data using merge to avoid blowing away keys like role, isVerified, or createdAt
       await setDoc(doc(this.firestore, `users/${user.uid}`), {
         fullName: this.profile.fullName,
         phone: this.profile.phone,
@@ -118,7 +143,10 @@ export class ProfilePage implements OnInit {
   }
 
   async logout() {
+    this.unsubscribeStreams();
     await signOut(this.auth);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login']).then(() => {
+      window.location.reload();
+    });
   }
 }

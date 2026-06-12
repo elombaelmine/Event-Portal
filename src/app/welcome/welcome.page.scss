@@ -1,5 +1,5 @@
 .welcome-screen {
-  --background: #F4EFE2;
+  --background: #f7f4ec;
 
   $dark-emerald: #0D3E2D;
   $forest-green: #1E6B45;
@@ -9,7 +9,7 @@
 
   .hero-section {
     position: relative;
-    height: 52vh;
+    height: clamp(320px, 52vh, 560px);
     width: 100%;
     overflow: hidden;
 
@@ -26,8 +26,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(to bottom, rgba(13, 62, 45, 0.18) 0%, rgba(244, 239, 226, 0.96) 95%);
-      z-index: 1;
+      // background: linear-gradient(to bottom, rgba(13, 62, 45, 0.18) 0%, rgba(244, 239, 226, 0.96) 95%);
+      // z-index: 1;
     }
   }
 
@@ -37,12 +37,13 @@
     margin-top: -30px;
     position: relative;
     z-index: 2;
-    padding: 32px 20px 24px;
-    border-radius: 28px 28px 0 0;
+    padding: clamp(28px, 5vw, 52px) 20px 24px;
+    border-radius: 18px 18px 0 0;
     box-shadow: 0 -12px 40px rgba(13, 62, 45, 0.08);
+    min-height: 48vh;
 
     h1 {
-      font-size: 2.4rem;
+      font-size: clamp(2rem, 7vw, 4.6rem);
       font-weight: 800;
       color: $dark-emerald;
       line-height: 1.1;
@@ -55,21 +56,26 @@
 
     p {
       color: #5B6C5C;
-      font-size: 1rem;
+      font-size: clamp(0.98rem, 2vw, 1.15rem);
       line-height: 1.75;
       padding: 0 12px;
       margin-top: 8px;
+      max-width: 620px;
+      margin-left: auto;
+      margin-right: auto;
     }
   }
 
   .button-group {
     margin-top: 34px;
-    padding: 0 18px;
+    width: min(100%, 420px);
+    margin-left: auto;
+    margin-right: auto;
 
     .get-started-btn {
       --background: #{$gold};
       --color: #0D3E2D;
-      --border-radius: 14px;
+      --border-radius: 8px;
       height: 56px;
       font-weight: 800;
       font-size: 1rem;
@@ -82,7 +88,7 @@
       --color: #{$dark-emerald};
       --border-color: #{$forest-green};
       --border-width: 2px;
-      --border-radius: 14px;
+      --border-radius: 8px;
       height: 56px;
       font-weight: 700;
       font-size: 1rem;
@@ -103,5 +109,38 @@
       padding-top: 12px;
       margin: 0 auto;
     }
+  }
+}
+
+@media (min-width: 900px) {
+  .welcome-screen {
+    .hero-section {
+      height: 62vh;
+    }
+
+    .content-section {
+      margin: -120px auto 0;
+      width: min(92%, 980px);
+      border-radius: 8px;
+      min-height: auto;
+    }
+
+    .button-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: min(100%, 520px);
+      gap: 14px;
+
+      .get-started-btn,
+      .login-btn {
+        margin: 0;
+      }
+    }
+  }
+}
+
+@media (max-width: 380px) {
+  .welcome-screen .content-section h1 {
+    font-size: 1.8rem;
   }
 }
